@@ -8,40 +8,30 @@ use yii\helpers\Json;
 use yii\web\NotFoundHttpException;
 
 /**
- * ErrorAction displays application errors using a specified view.
+ * LocalAction for handle LocalComponent.
  *
- * To use ErrorAction, you need to do the following steps:
+ * To use LocalAction, you need to do the following steps:
  *
- * First, declare an action of ErrorAction type in the `actions()` method of your `SiteController`
+ * First, declare an action of LocalAction type in the `actions()` method of your `SiteController`
  * class (or whatever controller you prefer), like the following:
  *
  * ```php
  * public function actions()
  * {
  *     return [
- *         'error' => ['class' => 'yii\web\ErrorAction'],
+ *         'file' => [
+ *             'class' => \diecoding\flysystem\LocalAction::class,
+ *             'component' => 'fs',
+ *         ],
  *     ];
  * }
  * ```
- *
- * Then, create a view file for this action. If the route of your error action is `site/error`, then
- * the view file should be `views/site/error.php`. In this view file, the following variables are available:
- *
- * - `$name`: the error name
- * - `$message`: the error message
- * - `$exception`: the exception being handled
- *
- * Finally, configure the "errorHandler" application component as follows,
- *
- * ```php
- * 'errorHandler' => [
- *     'errorAction' => 'site/error',
- * ]
- * ```
- *
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @author Dmitry Naumenko <d.naumenko.a@gmail.com>
- * @since 2.0
+ * 
+ * @package diecoding\flysystem
+ * 
+ * @link      https://sugengsulistiyawan.my.id/
+ * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
+ * @copyright Copyright (c) 2023
  */
 class LocalAction extends Action
 {

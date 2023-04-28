@@ -11,8 +11,6 @@ use yii\helpers\Url;
 
 /**
  * Class LocalComponent
- *
- * @package diecoding\flysystem
  * 
  * ```php
  * 'components' => [
@@ -21,10 +19,13 @@ use yii\helpers\Url;
  *         'path' => dirname(dirname(__DIR__)) . '/storage', // or you can use @alias
  *         'cipherAlgo' => 'aes-128-cbc',
  *         'secret' => 'my-secret',
+ *         'action' => '/site/file',
  *         'basePath' => '', // for multiple project in single storage, will be format to `$basePath . '/' . $path`
  *     ],
  * ],
  * ```
+ * 
+ * @package diecoding\flysystem
  * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
@@ -152,7 +153,8 @@ class LocalComponent extends AbstractComponent
         if ($dateValue instanceof \DateTimeInterface) {
             $timestamp = $dateValue->getTimestamp();
         } elseif (!is_numeric($dateValue)) {
-            $timestamp = strtotime($dateValue,
+            $timestamp = strtotime(
+                $dateValue,
                 $relativeTimeBase === null ? time() : $relativeTimeBase
             );
         } else {
