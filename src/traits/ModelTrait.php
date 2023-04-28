@@ -1,23 +1,29 @@
 <?php
 
-namespace diecoding\aws\s3\traits;
+namespace diecoding\flysystem\traits;
 
+use League\Flysystem\UnableToDeleteFile;
+use League\Flysystem\UnableToWriteFile;
 use Yii;
 use yii\web\UploadedFile;
 
 /**
  * Trait ModelTrait for Model
  * 
- * @package diecoding\aws\s3\traits
+ * @package diecoding\flysystem\traits
+ * 
+ * @link      https://sugengsulistiyawan.my.id/
+ * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
+ * @copyright Copyright (c) 2023
  */
 trait ModelTrait
 {
     /**
-     * @return \diecoding\aws\s3\Service
+     * @return \diecoding\flysystem\AbstractComponent
      */
-    public function getS3Component()
+    public function getFsComponent()
     {
-        return Yii::$app->get('s3');
+        return Yii::$app->get('fs');
     }
 
     /**
@@ -28,15 +34,15 @@ trait ModelTrait
      * @param string $attribute Attribute name where the uploaded filename name will be saved
      * @param string $fileName Name which file will be saved. If empty will use the name from $file
      * @param bool $autoExtension `true` to automatically append or replace the extension to the file name. Default is `true`
+     * @param array $config
      * 
-     * @return string|false Uploaded full path of filename on success or `false` in failure.
+     * @return bool `true` for Uploaded full path of filename on success or `false` in failure.
      */
-    public function saveUploadedFile(UploadedFile $file, $attribute, $fileName = '', $autoExtension = true)
+    public function saveUploadedFile(UploadedFile $file, $attribute, $fileName = '', $autoExtension = true, $config = [])
     {
         if ($this->hasError && !$file instanceof UploadedFile) {
             return false;
         }
-
         if (empty($fileName)) {
             $fileName = $file->name;
         }
@@ -44,27 +50,26 @@ trait ModelTrait
             $_file = (string) pathinfo($fileName, PATHINFO_FILENAME);
             $fileName = $_file . '.' . $file->extension;
         }
-
         $filePath = $this->getAttributePath($attribute) . $fileName;
+        try {
+            $localPath = $file->tempName;
+            $handle    = fopen($localPath, 'r');
+            $contents  = fread($handle, filesize($localPath));
+            fclose($handle);
+            
+            $filesystem = $this->getFsComponent();
+            $filesystem->write($filesystem->normalizePath($filePath), $contents, $config);
 
-        /** @var \Aws\ResultInterface $result */
-        $result = $this->getS3Component()
-            ->commands()
-            ->upload(
-                $filePath,
-                $file->tempName
-            )
-            ->withContentType($file->type)
-            ->execute();
+            return true;
+        } catch (UnableToWriteFile $exception) {
 
-        // Validate successful upload to S3
-        if ($this->isSuccessResponseStatus($result)) {
-            $this->{$attribute} = $fileName;
+            Yii::error([
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
 
-            return $fileName;
+            return false;
         }
-
-        return false;
     }
 
     /**
@@ -77,24 +82,25 @@ trait ModelTrait
     public function removeFile($attribute)
     {
         if (empty($this->{$attribute})) {
-            // No file to remove
             return true;
         }
-
         $filePath = $this->getAttributePath($attribute) . $this->{$attribute};
-        $result = $this->getS3Component()
-            ->commands()
-            ->delete($filePath)
-            ->execute();
+        try {
+            $filesystem = $this->getFsComponent();
+            $filesystem->delete($this->normalizePath($filePath));
 
-        // Validate successful removal from S3
-        if ($this->isSuccessResponseStatus($result)) {
             $this->{$attribute} = null;
 
             return true;
-        }
+        } catch (UnableToDeleteFile $exception) {
 
-        return false;
+            Yii::error([
+                'message' => $exception->getMessage(),
+                'trace' => $exception->getTraceAsString(),
+            ]);
+
+            return false;
+        }
     }
 
     /**
@@ -110,7 +116,7 @@ trait ModelTrait
             return '';
         }
 
-        return $this->getS3Component()->getUrl($this->getAttributePath($attribute) . $this->{$attribute});
+        return $this->getFsComponent()->getUrl($this->getAttributePath($attribute) . $this->{$attribute});
     }
 
     /**
@@ -126,7 +132,7 @@ trait ModelTrait
             return '';
         }
 
-        return $this->getS3Component()->getPresignedUrl(
+        return $this->getFsComponent()->getPresignedUrl(
             $this->getAttributePath($attribute) . $this->{$attribute},
             $this->getPresignedUrlDuration($attribute)
         );
@@ -172,21 +178,5 @@ trait ModelTrait
         }
 
         return '';
-    }
-
-    /**
-     * Check for valid status code from the AWS S3 response.
-     * Success responses will be considered status codes is 2**.
-     * Override function for custom validations.
-     * 
-     * @param \Aws\ResultInterface $response AWS S3 response containing the status code
-     * 
-     * @return bool whether this response is successful.
-     */
-    public function isSuccessResponseStatus($response)
-    {
-        return !empty($response->get('@metadata')['statusCode']) &&
-            $response->get('@metadata')['statusCode'] >= 200 &&
-            $response->get('@metadata')['statusCode'] < 300;
     }
 }
