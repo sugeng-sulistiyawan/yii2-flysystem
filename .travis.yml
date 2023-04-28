@@ -1,0 +1,10 @@
+language: php
+
+php:
+  - 7.4
+  - 8.0
+  - 8.1
+
+install:
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - composer update --no-interaction
