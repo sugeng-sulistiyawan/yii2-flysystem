@@ -40,7 +40,7 @@ trait ModelTrait
      */
     public function saveUploadedFile(UploadedFile $file, $attribute, $fileName = '', $autoExtension = true, $config = [])
     {
-        if ($this->hasError && !$file instanceof UploadedFile) {
+        if ($this->hasError) {
             return false;
         }
         if (empty($fileName)) {

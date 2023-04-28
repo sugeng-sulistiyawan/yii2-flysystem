@@ -35,6 +35,6 @@ or add to the require section of your `composer.json` file.
 
 ## Dependencies
 
-- PHP 7.4+
+- PHP 8.0+
 - [yiisoft/yii2](https://github.com/yiisoft/yii2)
 - [league/flysystem](https://github.com/thephpleague/flysystem)
