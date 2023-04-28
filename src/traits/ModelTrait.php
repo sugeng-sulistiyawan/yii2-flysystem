@@ -143,10 +143,14 @@ trait ModelTrait
      * 
      * @param string $attribute Attribute name which holds the duration
      * 
-     * @return mixed URL expiration
+     * @return int|string|\DateTimeInterface URL expiration
      */
     public function getPresignedUrlDuration($attribute)
     {
+        if (empty($this->{$attribute})) {
+            return 0;
+        }
+
         return '+30 minutes';
     }
 
