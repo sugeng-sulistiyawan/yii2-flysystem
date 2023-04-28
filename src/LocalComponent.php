@@ -16,7 +16,7 @@ use yii\base\InvalidConfigException;
  *     'fs' => [
  *         'class' => \diecoding\flysystem\LocalComponent::class,
  *         'path' => dirname(dirname(__DIR__)) . '/storage', // or you can use @alias
- *         'prefix' => '', // for multiple project in single storage, will be format to `$prefix . '/' . $path`
+ *         'basePath' => '', // for multiple project in single storage, will be format to `$basePath . '/' . $path`
  *     ],
  * ],
  * ```

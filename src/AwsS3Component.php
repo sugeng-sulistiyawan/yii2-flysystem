@@ -25,7 +25,7 @@ use yii\base\InvalidConfigException;
  *         'region' => 'us-east-1',
  *         'version' => 'latest',
  *         'usePathStyleEndpoint' => true,
- *         'prefix' => '',
+ *         'basePath' => '',
  *     ],
  * ],
  * ```
@@ -137,6 +137,6 @@ class AwsS3Component extends AbstractComponent
 
         $client = new S3Client($config);
 
-        return new AwsS3V3Adapter($client, $this->bucket, $this->prefix, null, null, $this->options, $this->streamReads);
+        return new AwsS3V3Adapter($client, $this->bucket, $this->basePath, null, null, $this->options, $this->streamReads);
     }
 }
