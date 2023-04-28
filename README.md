@@ -18,6 +18,13 @@ The League Flysystem for local anda remote filesystems library for Yii2.
   - [Table of Contents](#table-of-contents)
   - [Instalation](#instalation)
   - [Dependencies](#dependencies)
+  - [Using Traits](#using-traits)
+    - [Model Trait](#model-trait)
+      - [Using Trait Methods](#using-trait-methods)
+      - [Overriding Trait Methods](#overriding-trait-methods)
+        - [getFsComponent](#getfscomponent)
+        - [attributePaths](#attributepaths)
+        - [getPresignedUrlDuration](#getpresignedurlduration)
 
 ## Instalation
 
@@ -38,3 +45,141 @@ or add to the require section of your `composer.json` file.
 - PHP 8.0+
 - [yiisoft/yii2](https://github.com/yiisoft/yii2)
 - [league/flysystem](https://github.com/thephpleague/flysystem)
+
+## Using Traits
+
+### Model Trait
+
+Attach the Trait to the `Model/ActiveRecord` with some media attribute that will be saved in Flysystem (fs):
+
+```php
+/**
+ * @property string|null $file
+ */
+class Model extends \yii\db\ActiveRecord
+{
+    use \diecoding\flysystem\traits\ModelTrait;
+
+    // ...
+
+    public function rules()
+    {
+        return [
+            ['image', 'string'], // Stores the filename
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function attributePaths()
+    {
+        return [
+            'image' => 'images/'
+        ];
+    }
+
+    // ...
+}
+```
+
+Override the `attributePaths()` method to change the base path where the files will be saved on Flysystem (fs).
+
+- You can map a different path to each file attribute of your `Model/ActiveRecord`.
+
+#### Using Trait Methods
+
+```php
+$image = \yii\web\UploadedFile::getInstance($model, 'image');
+
+// Save image_thumb.* to Flysystem (fs) on //my_bucket/images/ path
+// The extension of the file will be determined by the submitted file type
+// This allows multiple file types upload (png,jpg,gif,...)
+// $model->image will hold "image_thumb.png" after this call finish with success
+$model->saveUploadedFile($image, 'image', 'image_thumb');
+
+// Save image_thumb.png to Flysystem (fs) on //my_bucket/images/ path
+// The extension of the file will be determined by the submitted file type
+// This force the extension to *.png
+$model->saveUploadedFile($image, 'image', 'image_thumb.png', false);
+
+// Get the URL to the image on Flysystem (fs)
+$model->getFileUrl('image');
+
+// Get the presigned URL to the image on Flysystem (fs)
+// The default duration is "+30 minutes"
+$model->getFilePresignedUrl('image');
+
+// Remove the file with named saved on the image attribute
+// Continuing the example, here "//my_bucket/images/my_image.png" will be deleted from Flysystem (fs)
+$model->removeFile('image');
+```
+
+#### Overriding Trait Methods
+
+##### getFsComponent
+
+The Flysystem (fs) MediaTrait depends on this component to be configured. The default configuration is to use this component on index `'fs'`, but you may use another value. For this cases, override the `getFsComponent()` method:
+
+```php
+public function getFsComponent()
+{
+    return Yii::$app->get('my_fs_component');
+}
+```
+
+##### attributePaths
+
+The main method to override is `attributePaths()`, which defines a path in Flysystem (fs) for each attribute of yout model. Allowing you to save each attribute in a different Flysystem (fs) folder.
+
+Here an example:
+
+```php
+protected function attributePaths()
+{
+    return [
+        'logo' => 'logos/',
+        'badge' => 'images/badges/'
+    ];
+}
+
+// or use another attribute, example: id
+// ! Note: id must contain a value first if you don't want it to be empty
+
+protected function attributePaths()
+{
+    return [
+        'logo' => 'thumbnail/' . $this->id . '/logos/',
+        'badge' => 'thumbnail/' . $this->id . '/images/badges/'
+    ];
+}
+```
+
+##### getPresignedUrlDuration
+
+The default pressigned URL duration is set to "+30 minutes", override this method and use your own expiration.
+
+```php
+protected function getPresignedUrlDuration($attribute)
+{
+    return '+2 hours';
+}
+
+// or if you want to set the attribute differently
+
+protected function getPresignedUrlDuration($attribute)
+{
+    switch ($attribute) {
+        case 'badge':
+            return '+2 hours';
+            break;
+        
+        default:
+            return '+1 days';
+            break;
+    }
+}
+
+```
+
+The value should be a valid PHP datetime operation. Read [PHP documentation](https://www.php.net/manual/en/datetime.formats.php) for details

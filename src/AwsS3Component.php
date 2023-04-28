@@ -87,6 +87,11 @@ class AwsS3Component extends AbstractComponent
     public $credentials;
 
     /**
+     * @var S3Client
+     */
+    protected $client;
+
+    /**
      * @inheritdoc
      */
     public function init()
@@ -106,6 +111,35 @@ class AwsS3Component extends AbstractComponent
         }
 
         parent::init();
+    }
+
+    /**
+     * Get a URL
+     * 
+     * @param string $filePath
+     * @return string
+     */
+    public function getUrl(string $filePath)
+    {
+        return $this->client->getObjectUrl($this->bucket, $this->normalizePath($filePath));
+    }
+
+    /**
+     * Get a pre-signed URL
+     * 
+     * @param string $filePath
+     * @param int|string|\DateTimeInterface $expires
+     * @return string
+     */
+    public function getPresignedUrl(string $filePath, $expires = '+5 Minutes')
+    {
+        $command = $this->client->getCommand('GetObject', [
+            'Bucket' => $this->bucket,
+            'Key' => $this->normalizePath($filePath),
+        ]);
+        $presignedRequest = $this->client->createPresignedRequest($command, $expires);
+
+        return (string) $presignedRequest->getUri();
     }
 
     /**
@@ -135,8 +169,8 @@ class AwsS3Component extends AbstractComponent
 
         $config['version'] = $this->version;
 
-        $client = new S3Client($config);
+        $this->client = new S3Client($config);
 
-        return new AwsS3V3Adapter($client, $this->bucket, $this->basePath, null, null, $this->options, $this->streamReads);
+        return new AwsS3V3Adapter($this->client, $this->bucket, $this->basePath, null, null, $this->options, $this->streamReads);
     }
 }

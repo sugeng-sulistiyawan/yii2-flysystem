@@ -47,6 +47,29 @@ class LocalComponent extends AbstractComponent
     }
 
     /**
+     * Get a URL
+     * 
+     * @param string $filePath
+     * @return string
+     */
+    public function getUrl(string $filePath)
+    {
+        throw new InvalidConfigException('Not Implemented');
+    }
+
+    /**
+     * Get a pre-signed URL
+     * 
+     * @param string $filePath
+     * @param int|string|\DateTimeInterface $expires
+     * @return string
+     */
+    public function getPresignedUrl(string $filePath, $expires = '+5 Minutes')
+    {
+        throw new InvalidConfigException('Not Implemented');
+    }
+
+    /**
      * @return LocalFilesystemAdapter
      */
     protected function initAdapter()

@@ -85,11 +85,6 @@ abstract class AbstractComponent extends Component
     }
 
     /**
-     * @return FilesystemAdapter $adapter
-     */
-    abstract protected function initAdapter();
-
-    /**
      * Normalizes a file/directory path.
      *
      * The normalization does the following work:
@@ -113,4 +108,26 @@ abstract class AbstractComponent extends Component
 
         return $path[0] === "/" ? substr($path, 1) : $path;
     }
+
+    /**
+     * Get a URL
+     * 
+     * @param string $filePath
+     * @return string
+     */
+    abstract public function getUrl(string $filePath);
+
+    /**
+     * Get a pre-signed URL
+     * 
+     * @param string $filePath
+     * @param int|string|\DateTimeInterface $expires
+     * @return string
+     */
+    abstract public function getPresignedUrl(string $filePath, $expires);
+
+    /**
+     * @return FilesystemAdapter $adapter
+     */
+    abstract protected function initAdapter();
 }
