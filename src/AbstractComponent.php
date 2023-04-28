@@ -6,6 +6,7 @@ use League\Flysystem\Config;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemAdapter;
 use yii\base\Component;
+use yii\helpers\FileHelper;
 
 /**
  * Class AbstractComponent
@@ -44,6 +45,10 @@ use yii\base\Component;
  * @method boolean updateStream(string $path, resource $resource, array $config = [])
  * @method boolean write(string $path, string $contents, array $config = [])
  * @method boolean writeStream(string $path, resource $resource, array $config = [])
+ * 
+ * @link      https://sugengsulistiyawan.my.id/
+ * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
+ * @copyright Copyright (c) 2023
  */
 abstract class AbstractComponent extends Component
 {
@@ -51,6 +56,12 @@ abstract class AbstractComponent extends Component
      * @var Config|array|string|null
      */
     public $config;
+
+    /** 
+     * @var string|null 
+     */
+    public $basePath;
+
     /**
      * @var Filesystem
      */
@@ -69,7 +80,8 @@ abstract class AbstractComponent extends Component
      */
     public function init()
     {
-        $adapter = $this->initAdapter();
+        $adapter          = $this->initAdapter();
+        $this->config     = $this->config ?? [];
         $this->filesystem = new Filesystem($adapter, $this->config);
     }
 
@@ -85,4 +97,29 @@ abstract class AbstractComponent extends Component
      * @return FilesystemAdapter $adapter
      */
     abstract protected function initAdapter();
+
+    /**
+     * Normalizes a file/directory path.
+     *
+     * The normalization does the following work:
+     *
+     * - Convert all directory separators into `DIRECTORY_SEPARATOR` (e.g. "\a/b\c" becomes "a/b/c")
+     * - Remove trailing directory separators (e.g. "/a/b/c/" becomes "a/b/c")
+     * - Remove first directory separators (e.g. "/a/b/c" becomes "a/b/c")
+     * - Turn multiple consecutive slashes into a single one (e.g. "/a///b/c" becomes "a/b/c")
+     * - Remove ".." and "." based on their meanings (e.g. "/a/./b/../c" becomes "a/c")
+     *
+     * Note: For registered stream wrappers, the consecutive slashes rule
+     * and ".."/"." translations are skipped.
+     * 
+     * @param string $path
+     * @return string
+     */
+    public function normalizePath(string $path)
+    {
+        $basePath = $this->basePath ? "{$this->basePath}/" : '';
+        $path     = FileHelper::normalizePath($basePath . $path, "/");
+
+        return $path[0] === "/" ? substr($path, 1) : $path;
+    }
 }
