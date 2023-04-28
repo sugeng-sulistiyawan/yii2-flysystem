@@ -5,8 +5,10 @@ namespace diecoding\flysystem;
 use League\Flysystem\Config;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemAdapter;
+use Yii;
 use yii\base\Component;
 use yii\helpers\FileHelper;
+use yii\web\NotFoundHttpException;
 
 /**
  * Class AbstractComponent

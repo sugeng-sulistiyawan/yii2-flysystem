@@ -171,6 +171,6 @@ class AwsS3Component extends AbstractComponent
 
         $this->client = new S3Client($config);
 
-        return new AwsS3V3Adapter($this->client, $this->bucket, $this->basePath, null, null, $this->options, $this->streamReads);
+        return new AwsS3V3Adapter($this->client, $this->bucket, '', null, null, $this->options, $this->streamReads);
     }
 }
