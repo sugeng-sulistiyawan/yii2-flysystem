@@ -145,7 +145,7 @@ class LocalComponent extends AbstractComponent
      * Convert To Timestamp
      *
      * @param int|string|\DateTimeInterface $dateValue
-     * @param int|string|null $relativeTimeBase
+     * @param int|null $relativeTimeBase
      * @return int|false
      */
     public function convertToTimestamp($dateValue, $relativeTimeBase = null)
@@ -158,7 +158,7 @@ class LocalComponent extends AbstractComponent
                 $relativeTimeBase === null ? time() : $relativeTimeBase
             );
         } else {
-            $timestamp = $dateValue;
+            $timestamp = (int) $dateValue;
         }
 
         return $timestamp;

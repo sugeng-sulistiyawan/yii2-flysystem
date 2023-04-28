@@ -41,7 +41,7 @@ class LocalAction extends Action
     public $component = 'fs';
 
     /**
-     * @var LocalComponent
+     * @var mixed|LocalComponent
      */
     protected $filesystem;
 
@@ -57,7 +57,7 @@ class LocalAction extends Action
      * Runs the action.
      *
      * @param string $data
-     * @return string result content
+     * @return mixed result content
      * @throws NotFoundHttpException if data not valid
      */
     public function run($data)
@@ -66,18 +66,18 @@ class LocalAction extends Action
             $params = Json::decode($this->filesystem->decrypt($data));
 
             $now      = time();
-            $filePath = (string) $params['filePath'];
+            $filePath = $params['filePath'];
             $expires  = $params['expires'];
 
             if ($expires !== null && (int) $expires < $now) {
-                $filePath = false;
+                $filePath = '';
             }
         } catch (\Throwable $th) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
 
         $normalizePath = '/' . $this->filesystem->normalizePath($filePath);
-        if ($filePath === false || !$this->filesystem->fileExists($normalizePath)) {
+        if ($filePath === '' || !$this->filesystem->fileExists($normalizePath)) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
 
