@@ -30,7 +30,7 @@
 		"source": "https://github.com/sugeng-sulistiyawan/yii2-flysystem"
 	},
 	"require": {
-		"php": ">=7.4.0",
+		"php": ">=8.0",
 		"league/flysystem": "^3.14",
 		"yiisoft/yii2": "~2.0"
 	},

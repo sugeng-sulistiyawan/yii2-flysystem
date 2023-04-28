@@ -8,8 +8,10 @@ use League\Flysystem\FilesystemAdapter;
 use yii\base\Component;
 
 /**
- * Filesystem
+ * Class AbstractComponent
  *
+ * @package diecoding\flysystem
+ * 
  * @method \League\Flysystem\FilesystemInterface addPlugin(\League\Flysystem\PluginInterface $plugin)
  * @method void assertAbsent(string $path)
  * @method void assertPresent(string $path)
@@ -50,22 +52,6 @@ abstract class AbstractComponent extends Component
      */
     public $config;
     /**
-     * @var string|null
-     */
-    public $cache;
-    /**
-     * @var string
-     */
-    public $cacheKey = 'flysystem';
-    /**
-     * @var integer
-     */
-    public $cacheDuration = 3600;
-    /**
-     * @var string|null
-     */
-    public $replica;
-    /**
      * @var Filesystem
      */
     protected $filesystem;
@@ -84,8 +70,15 @@ abstract class AbstractComponent extends Component
     public function init()
     {
         $adapter = $this->initAdapter();
-
         $this->filesystem = new Filesystem($adapter, $this->config);
+    }
+
+    /**
+     * @return Filesystem
+     */
+    public function getFilesystem()
+    {
+        return $this->filesystem;
     }
 
     /**
