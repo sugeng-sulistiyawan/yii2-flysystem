@@ -1,6 +1,6 @@
 # Yii2 Flysystem
 
-The League Flysystem for local anda remote filesystems library for Yii2.
+The League Flysystem for local and remote filesystems library for Yii2.
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/diecoding/yii2-flysystem?label=stable)](https://packagist.org/packages/diecoding/yii2-flysystem)
 [![Total Downloads](https://img.shields.io/packagist/dt/diecoding/yii2-flysystem)](https://packagist.org/packages/diecoding/yii2-flysystem)

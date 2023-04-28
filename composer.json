@@ -1,6 +1,6 @@
 {
 	"name": "diecoding/yii2-flysystem",
-	"description": "The League Flysystem for local anda remote filesystems library for Yii2",
+	"description": "The League Flysystem for local and remote filesystems library for Yii2",
 	"authors": [
 		{
 			"name": "Sugeng Sulistiyawan",
