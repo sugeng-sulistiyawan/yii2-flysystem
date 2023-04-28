@@ -13,38 +13,27 @@ use yii\helpers\FileHelper;
  *
  * @package diecoding\flysystem
  * 
- * @method \League\Flysystem\FilesystemInterface addPlugin(\League\Flysystem\PluginInterface $plugin)
- * @method void assertAbsent(string $path)
- * @method void assertPresent(string $path)
- * @method boolean copy(string $path, string $newpath)
- * @method boolean createDir(string $dirname, array $config = null)
- * @method boolean delete(string $path)
- * @method boolean deleteDir(string $dirname)
- * @method \League\Flysystem\Handler get(string $path, \League\Flysystem\Handler $handler = null)
- * @method \League\Flysystem\AdapterInterface getAdapter()
- * @method \League\Flysystem\Config getConfig()
- * @method array|false getMetadata(string $path)
- * @method string|false getMimetype(string $path)
- * @method integer|false getSize(string $path)
- * @method integer|false getTimestamp(string $path)
- * @method string|false getVisibility(string $path)
- * @method array getWithMetadata(string $path, array $metadata)
- * @method boolean has(string $path)
- * @method array listContents(string $directory = '', boolean $recursive = false)
- * @method array listFiles(string $path = '', boolean $recursive = false)
- * @method array listPaths(string $path = '', boolean $recursive = false)
- * @method array listWith(array $keys = [], $directory = '', $recursive = false)
- * @method boolean put(string $path, string $contents, array $config = [])
- * @method boolean putStream(string $path, resource $resource, array $config = [])
- * @method string|false read(string $path)
- * @method string|false readAndDelete(string $path)
- * @method resource|false readStream(string $path)
- * @method boolean rename(string $path, string $newpath)
- * @method boolean setVisibility(string $path, string $visibility)
- * @method boolean update(string $path, string $contents, array $config = [])
- * @method boolean updateStream(string $path, resource $resource, array $config = [])
- * @method boolean write(string $path, string $contents, array $config = [])
- * @method boolean writeStream(string $path, resource $resource, array $config = [])
+ * @method bool fileExists(string $location)
+ * @method bool directoryExists(string $location)
+ * @method bool has(string $location) check fileExists or directoryExists
+ * @method void write(string $location, string $contents, array $config = [])
+ * @method void writeStream(string $location, $contents, array $config = [])
+ * @method string read(string $location)
+ * @method resource readStream(string $location)
+ * @method void delete(string $location)
+ * @method void deleteDirectory(string $location)
+ * @method void createDirectory(string $location, array $config = [])
+ * @method \League\Flysystem\DirectoryListing listContents(string $location, bool $deep = false)
+ * @method void move(string $source, string $destination, array $config = [])
+ * @method void copy(string $source, string $destination, array $config = [])
+ * @method int lastModified(string $path)
+ * @method int fileSize(string $path)
+ * @method string mimeType(string $path)
+ * @method void setVisibility(string $path, string $visibility)
+ * @method string visibility(string $path)
+ * @method string publicUrl(string $path, array $config = [])
+ * @method string temporaryUrl(string $path, DateTimeInterface $expiresAt, array $config = [])
+ * @method string checksum(string $path, array $config = [])
  * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
@@ -60,7 +49,7 @@ abstract class AbstractComponent extends Component
     /** 
      * @var string|null 
      */
-    public $basePath;
+    public $prefix;
 
     /**
      * @var Filesystem
@@ -68,7 +57,9 @@ abstract class AbstractComponent extends Component
     protected $filesystem;
 
     /**
-     * @inheritdoc
+     * @param string $method
+     * @param array $parameters
+     * @return mixed
      */
     public function __call($method, $parameters)
     {
@@ -117,8 +108,8 @@ abstract class AbstractComponent extends Component
      */
     public function normalizePath(string $path)
     {
-        $basePath = $this->basePath ? "{$this->basePath}/" : '';
-        $path     = FileHelper::normalizePath($basePath . $path, "/");
+        $prefix = $this->prefix ? "{$this->prefix}/" : '';
+        $path   = FileHelper::normalizePath($prefix . $path, "/");
 
         return $path[0] === "/" ? substr($path, 1) : $path;
     }

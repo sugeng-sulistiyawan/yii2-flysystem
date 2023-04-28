@@ -16,7 +16,7 @@ use yii\base\InvalidConfigException;
  *     'fs' => [
  *         'class' => \diecoding\flysystem\LocalComponent::class,
  *         'path' => dirname(dirname(__DIR__)) . '/storage', // or you can use @alias
- *         'basePath' => '', // for multiple project in single storage, will be format to `$basePath . $path`
+ *         'prefix' => '', // for multiple project in single storage, will be format to `$prefix . '/' . $path`
  *     ],
  * ],
  * ```
@@ -37,7 +37,7 @@ class LocalComponent extends AbstractComponent
      */
     public function init()
     {
-        if ($this->path === null) {
+        if (empty($this->path)) {
             throw new InvalidConfigException('The "path" property must be set.');
         }
 
