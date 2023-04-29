@@ -56,11 +56,11 @@ class LocalAction extends Action
     /**
      * Runs the action.
      *
-     * @param string $data
+     * @param string|null $data
      * @return mixed result content
      * @throws NotFoundHttpException if data not valid
      */
-    public function run($data)
+    public function run($data = null)
     {
         try {
             $params = Json::decode($this->filesystem->decrypt($data));
