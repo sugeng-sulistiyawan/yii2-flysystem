@@ -4,7 +4,6 @@ namespace diecoding\flysystem;
 
 use Aws\S3\S3Client;
 use League\Flysystem\AwsS3V3\AwsS3V3Adapter;
-use Yii;
 use yii\base\InvalidConfigException;
 
 /**
@@ -154,6 +153,9 @@ class AwsS3Component extends AbstractComponent
         } else {
             $config['credentials'] = $this->credentials;
         }
+
+        $this->key    = $config['credentials']['key'];
+        $this->secret = $config['credentials']['secret'];
 
         if ($this->usePathStyleEndpoint === true) {
             $config['use_path_style_endpoint'] = true;

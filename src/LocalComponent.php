@@ -6,7 +6,6 @@ use League\Flysystem\Local\LocalFilesystemAdapter;
 use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\Json;
-use yii\helpers\StringHelper;
 use yii\helpers\Url;
 
 /**
@@ -37,16 +36,6 @@ class LocalComponent extends AbstractComponent
      * @var string
      */
     public $path;
-
-    /**
-     * @var string
-     */
-    public $cipherAlgo = 'aes-128-cbc';
-
-    /**
-     * @var string
-     */
-    public $secret;
 
     /**
      * @var string
@@ -110,57 +99,5 @@ class LocalComponent extends AbstractComponent
     protected function initAdapter()
     {
         return new LocalFilesystemAdapter($this->path);
-    }
-
-    /**
-     * Encrypts a string.
-     * 
-     * @param string $string the string to encrypt
-     * @return string the encrypted string
-     */
-    public function encrypt($string)
-    {
-        $encryptedString = openssl_encrypt($string, $this->cipherAlgo, $this->secret);
-        $encryptedString = StringHelper::base64UrlEncode(base64_encode($encryptedString));
-
-        return $encryptedString;
-    }
-
-    /**
-     * Decrypts a string. 
-     * False is returned in case it was not possible to decrypt it.
-     * 
-     * @param string $string the string to decrypt
-     * @return string the decrypted string
-     */
-    public function decrypt($string)
-    {
-        $decodedString = base64_decode(StringHelper::base64UrlDecode($string));
-        $decodedString = openssl_decrypt($decodedString, $this->cipherAlgo, $this->secret);
-
-        return $decodedString;
-    }
-
-    /**
-     * Convert To Timestamp
-     *
-     * @param int|string|\DateTimeInterface $dateValue
-     * @param int|null $relativeTimeBase
-     * @return int|false
-     */
-    public function convertToTimestamp($dateValue, $relativeTimeBase = null)
-    {
-        if ($dateValue instanceof \DateTimeInterface) {
-            $timestamp = $dateValue->getTimestamp();
-        } elseif (!is_numeric($dateValue)) {
-            $timestamp = strtotime(
-                $dateValue,
-                $relativeTimeBase === null ? time() : $relativeTimeBase
-            );
-        } else {
-            $timestamp = (int) $dateValue;
-        }
-
-        return $timestamp;
     }
 }

@@ -5,10 +5,9 @@ namespace diecoding\flysystem;
 use League\Flysystem\Config;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemAdapter;
-use Yii;
 use yii\base\Component;
 use yii\helpers\FileHelper;
-use yii\web\NotFoundHttpException;
+use yii\helpers\StringHelper;
 
 /**
  * Class AbstractComponent
@@ -52,6 +51,16 @@ abstract class AbstractComponent extends Component
      * @var string|null 
      */
     public $basePath;
+
+    /**
+     * @var string
+     */
+    public $cipherAlgo = 'aes-128-cbc';
+
+    /**
+     * @var string
+     */
+    public $secret;
 
     /**
      * @var Filesystem
@@ -109,6 +118,58 @@ abstract class AbstractComponent extends Component
         $path     = FileHelper::normalizePath($basePath . $path, "/");
 
         return $path[0] === "/" ? substr($path, 1) : $path;
+    }
+
+    /**
+     * Encrypts a string.
+     * 
+     * @param string $string the string to encrypt
+     * @return string the encrypted string
+     */
+    public function encrypt($string)
+    {
+        $encryptedString = openssl_encrypt($string, $this->cipherAlgo, $this->secret);
+        $encryptedString = StringHelper::base64UrlEncode(base64_encode($encryptedString));
+
+        return $encryptedString;
+    }
+
+    /**
+     * Decrypts a string. 
+     * False is returned in case it was not possible to decrypt it.
+     * 
+     * @param string $string the string to decrypt
+     * @return string the decrypted string
+     */
+    public function decrypt($string)
+    {
+        $decodedString = base64_decode(StringHelper::base64UrlDecode($string));
+        $decodedString = openssl_decrypt($decodedString, $this->cipherAlgo, $this->secret);
+
+        return $decodedString;
+    }
+
+    /**
+     * Convert To Timestamp
+     *
+     * @param int|string|\DateTimeInterface $dateValue
+     * @param int|null $relativeTimeBase
+     * @return int|false
+     */
+    public function convertToTimestamp($dateValue, $relativeTimeBase = null)
+    {
+        if ($dateValue instanceof \DateTimeInterface) {
+            $timestamp = $dateValue->getTimestamp();
+        } elseif (!is_numeric($dateValue)) {
+            $timestamp = strtotime(
+                $dateValue,
+                $relativeTimeBase === null ? time() : $relativeTimeBase
+            );
+        } else {
+            $timestamp = (int) $dateValue;
+        }
+
+        return $timestamp;
     }
 
     /**
