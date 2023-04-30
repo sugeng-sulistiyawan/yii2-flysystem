@@ -27,7 +27,7 @@ trait ModelTrait
     }
 
     /**
-     * Save UploadedFile to AWS S3.
+     * Save UploadedFile.
      * ! Important: This function uploads this model filename to keep consistency of the model.
      * 
      * @param UploadedFile $file Uploaded file to save
@@ -36,71 +36,49 @@ trait ModelTrait
      * @param bool $autoExtension `true` to automatically append or replace the extension to the file name. Default is `true`
      * @param array $config
      * 
-     * @return bool `true` for Uploaded full path of filename on success or `false` in failure.
+     * @return void
      */
     public function saveUploadedFile(UploadedFile $file, $attribute, $fileName = '', $autoExtension = true, $config = [])
     {
         if ($this->hasError) {
-            return false;
+            return;
         }
         if (empty($fileName)) {
             $fileName = $file->name;
         }
         if ($autoExtension) {
-            $_file = (string) pathinfo($fileName, PATHINFO_FILENAME);
+            $_file    = (string) pathinfo($fileName, PATHINFO_FILENAME);
             $fileName = $_file . '.' . $file->extension;
         }
-        $filePath = $this->getAttributePath($attribute) . $fileName;
-        try {
-            $localPath = $file->tempName;
-            $handle    = fopen($localPath, 'r');
-            $contents  = fread($handle, filesize($localPath));
-            fclose($handle);
-            
-            $filesystem = $this->getFsComponent();
-            $filesystem->write($filesystem->normalizePath($filePath), $contents, $config);
+        $filePath  = $this->getAttributePath($attribute) . '/' . $fileName;
+        $localPath = $file->tempName;
+        $handle    = fopen($localPath, 'r');
+        $contents  = fread($handle, filesize($localPath));
+        fclose($handle);
 
-            return true;
-        } catch (UnableToWriteFile $exception) {
+        $filesystem = $this->getFsComponent();
+        $filesystem->write($filesystem->normalizePath($filePath), $contents, $config);
 
-            Yii::error([
-                'message' => $exception->getMessage(),
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
-            return false;
-        }
+        $this->{$attribute} = $fileName;
     }
 
     /**
-     * Delete model file attribute from AWS S3.
+     * Delete model file attribute.
      * 
      * @param string $attribute Attribute name which holds the filename
      * 
-     * @return bool `true` on success or if file doesn't exist.
+     * @return void
      */
     public function removeFile($attribute)
     {
         if (empty($this->{$attribute})) {
-            return true;
+            return;
         }
-        $filePath = $this->getAttributePath($attribute) . $this->{$attribute};
-        try {
-            $filesystem = $this->getFsComponent();
-            $filesystem->delete($this->normalizePath($filePath));
+        $filePath   = $this->getAttributePath($attribute) . '/' . $this->{$attribute};
+        $filesystem = $this->getFsComponent();
+        $filesystem->delete($this->normalizePath($filePath));
 
-            $this->{$attribute} = null;
-
-            return true;
-        } catch (UnableToDeleteFile $exception) {
-
-            Yii::error([
-                'message' => $exception->getMessage(),
-                'trace' => $exception->getTraceAsString(),
-            ]);
-
-            return false;
-        }
+        $this->{$attribute} = null;
     }
 
     /**
