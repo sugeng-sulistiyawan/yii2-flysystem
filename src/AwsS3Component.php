@@ -24,7 +24,7 @@ use yii\base\InvalidConfigException;
  *         'region' => 'us-east-1',
  *         'version' => 'latest',
  *         'usePathStyleEndpoint' => true,
- *         'basePath' => '',
+ *         'prefix' => '',
  *     ],
  * ],
  * ```

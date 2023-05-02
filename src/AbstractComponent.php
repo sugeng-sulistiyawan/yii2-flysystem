@@ -50,7 +50,7 @@ abstract class AbstractComponent extends Component
     /** 
      * @var string|null 
      */
-    public $basePath;
+    public $prefix;
 
     /**
      * @var string
@@ -114,8 +114,8 @@ abstract class AbstractComponent extends Component
      */
     public function normalizePath(string $path)
     {
-        $basePath = $this->basePath ? "{$this->basePath}/" : '';
-        $path     = FileHelper::normalizePath($basePath . $path, "/");
+        $prefix = $this->prefix ? "{$this->prefix}/" : '';
+        $path     = FileHelper::normalizePath($prefix . $path, "/");
 
         return $path[0] === "/" ? substr($path, 1) : $path;
     }

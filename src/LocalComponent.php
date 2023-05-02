@@ -19,7 +19,7 @@ use yii\helpers\Url;
  *         'cipherAlgo' => 'aes-128-cbc',
  *         'secret' => 'my-secret',
  *         'action' => '/site/file',
- *         'basePath' => '', // for multiple project in single storage, will be format to `$basePath . '/' . $path`
+ *         'prefix' => '', // for multiple project in single storage, will be format to `$prefix . '/' . $path`
  *     ],
  * ],
  * ```
