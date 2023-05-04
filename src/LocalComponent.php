@@ -49,8 +49,8 @@ class LocalComponent extends AbstractComponent
      */
     protected function initAdapter()
     {
-        $this->path = Yii::getAlias($this->path);
-        $location   = $this->normalizePath((string) $this->path . '/' . $this->prefix);
+        $this->path = (string) Yii::getAlias($this->path);
+        $location   = $this->normalizePath($this->path . '/' . $this->prefix);
 
         return new LocalFilesystemAdapter($location);
     }
