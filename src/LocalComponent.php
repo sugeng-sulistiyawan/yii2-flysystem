@@ -43,22 +43,22 @@ class LocalComponent extends AbstractComponent
     /**
      * @var string
      */
+    public $secret;
+
+    /**
+     * @var string
+     */
+    public $key;
+
+    /**
+     * @var string
+     */
     public $action = '/site/file';
 
     /**
      * @var string
      */
     public $cipherAlgo = 'aes-128-cbc';
-
-    /**
-     * @var string
-     */
-    public $passphrase;
-
-    /**
-     * @var string
-     */
-    public $iv;
 
     /**
      * @var string
