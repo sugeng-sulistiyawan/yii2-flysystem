@@ -118,26 +118,15 @@ class LocalComponent extends AbstractComponent
     }
 
     /**
-     * @return LocalFilesystemAdapter
-     */
-    protected function initAdapter()
-    {
-        $this->path      = (string) Yii::getAlias($this->path);
-        $this->_basePath = $this->normalizePath($this->path . '/' . $this->prefix);
-
-        return new LocalFilesystemAdapter($this->_basePath);
-    }
-
-    /**
      * Encrypts a string.
      * 
      * @param string $string the string to encrypt
      * @return string the encrypted string
      */
-    protected function encrypt($string)
+    public function encrypt($string)
     {
         $encryptedString = openssl_encrypt($string, $this->cipherAlgo, $this->secret, OPENSSL_RAW_DATA, $this->key);
-        $encryptedString = StringHelper::base64UrlEncode(base64_encode($encryptedString));
+        $encryptedString = StringHelper::base64UrlEncode($encryptedString);
 
         return $encryptedString;
     }
@@ -149,11 +138,22 @@ class LocalComponent extends AbstractComponent
      * @param string $string the string to decrypt
      * @return string the decrypted string
      */
-    protected function decrypt($string)
+    public function decrypt($string)
     {
-        $decodedString = base64_decode(StringHelper::base64UrlDecode($string));
+        $decodedString = StringHelper::base64UrlDecode($string);
         $decodedString = openssl_decrypt($decodedString, $this->cipherAlgo, $this->secret, OPENSSL_RAW_DATA, $this->key);
 
         return $decodedString;
+    }
+
+    /**
+     * @return LocalFilesystemAdapter
+     */
+    protected function initAdapter()
+    {
+        $this->path      = (string) Yii::getAlias($this->path);
+        $this->_basePath = $this->normalizePath($this->path . '/' . $this->prefix);
+
+        return new LocalFilesystemAdapter($this->_basePath);
     }
 }
