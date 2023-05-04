@@ -17,7 +17,7 @@ use yii\web\UploadedFile;
 trait ModelTrait
 {
     /**
-     * @return \diecoding\flysystem\AbstractComponent
+     * @return object|null|\diecoding\flysystem\AbstractComponent
      */
     public function getFsComponent()
     {

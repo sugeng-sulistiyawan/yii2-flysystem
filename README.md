@@ -1,6 +1,8 @@
 # Yii2 Flysystem
 
 The League Flysystem for local and remote filesystems library for Yii2.
+This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integration for the Yii framework.
+[Flysystem](https://flysystem.thephpleague.com) is a filesystem abstraction which allows you to easily swap out a local filesystem for a remote one.
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/diecoding/yii2-flysystem?label=stable)](https://packagist.org/packages/diecoding/yii2-flysystem)
 [![Total Downloads](https://img.shields.io/packagist/dt/diecoding/yii2-flysystem)](https://packagist.org/packages/diecoding/yii2-flysystem)

@@ -105,13 +105,7 @@ abstract class AbstractComponent extends Component
      */
     public function convertToDateTime($dateValue)
     {
-        if ($dateValue instanceof \DateTimeInterface) {
-            $datetime = $dateValue;
-        } else {
-            $datetime = new \DateTimeImmutable($dateValue);
-        }
-
-        return $datetime;
+        return new \DateTimeImmutable($dateValue);
     }
 
     /**

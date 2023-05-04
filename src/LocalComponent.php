@@ -41,10 +41,6 @@ class LocalComponent extends AbstractComponent
             throw new InvalidConfigException('The "path" property must be set.');
         }
 
-        if (empty($this->secret)) {
-            throw new InvalidConfigException('The "secret" property must be set.');
-        }
-
         parent::init();
     }
 
@@ -53,7 +49,8 @@ class LocalComponent extends AbstractComponent
      */
     protected function initAdapter()
     {
-        $location = $this->normalizePath(Yii::getAlias($this->path) . '/' . $this->prefix);
+        $this->path = Yii::getAlias($this->path);
+        $location   = $this->normalizePath((string) $this->path . '/' . $this->prefix);
 
         return new LocalFilesystemAdapter($location);
     }
