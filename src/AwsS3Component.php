@@ -16,14 +16,9 @@ use yii\base\InvalidConfigException;
  *     'fs' => [
  *         'class' => \diecoding\flysystem\AwsS3Component::class,
  *         'endpoint' => 'my-endpoint',
- *         'credentials' => [ // array|\Aws\CacheInterface|\Aws\Credentials\CredentialsInterface|bool|callable
- *             'key' => 'my-key',
- *             'secret' => 'my-secret',
- *         ],
+ *         'key' => 'my-key',
+ *         'secret' => 'my-secret',
  *         'bucket' => 'my-bucket',
- *         'region' => 'us-east-1',
- *         'version' => 'latest',
- *         'usePathStyleEndpoint' => true,
  *         'prefix' => '',
  *     ],
  * ],
@@ -38,22 +33,27 @@ class AwsS3Component extends AbstractComponent
     /**
      * @var string
      */
-    public $endpoint = '';
+    public $endpoint;
 
     /**
      * @var string
      */
-    public $key = '';
+    public $key;
 
     /**
      * @var string
      */
-    public $secret = '';
+    public $secret;
 
     /**
      * @var string
      */
-    public $region = '';
+    public $bucket;
+
+    /**
+     * @var string
+     */
+    public $region = 'us-east-1';
 
     /**
      * @var string
@@ -61,19 +61,9 @@ class AwsS3Component extends AbstractComponent
     public $version = 'latest';
 
     /**
-     * @var string
-     */
-    public $bucket = '';
-
-    /**
      * @var bool
      */
     public $usePathStyleEndpoint = false;
-
-    /**
-     * @var array
-     */
-    public $options = [];
 
     /**
      * @var bool
@@ -81,9 +71,14 @@ class AwsS3Component extends AbstractComponent
     public $streamReads = false;
 
     /**
-     * @var array|\Aws\CacheInterface|\Aws\Credentials\CredentialsInterface|bool|callable
+     * @var array
      */
-    public $credentials;
+    public $options = [];
+
+    /**
+     * @var array
+     */
+    public $credentials = [];
 
     /**
      * @var S3Client
@@ -113,35 +108,6 @@ class AwsS3Component extends AbstractComponent
     }
 
     /**
-     * Get a URL
-     * 
-     * @param string $filePath
-     * @return string
-     */
-    public function getUrl(string $filePath)
-    {
-        return $this->client->getObjectUrl($this->bucket, $this->normalizePath($filePath));
-    }
-
-    /**
-     * Get a pre-signed URL
-     * 
-     * @param string $filePath
-     * @param int|string|\DateTimeInterface $expires
-     * @return string
-     */
-    public function getPresignedUrl(string $filePath, $expires = '+5 Minutes')
-    {
-        $command = $this->client->getCommand('GetObject', [
-            'Bucket' => $this->bucket,
-            'Key' => $this->normalizePath($filePath),
-        ]);
-        $presignedRequest = $this->client->createPresignedRequest($command, $expires);
-
-        return (string) $presignedRequest->getUri();
-    }
-
-    /**
      * @return AwsS3V3Adapter
      */
     protected function initAdapter()
@@ -149,30 +115,21 @@ class AwsS3Component extends AbstractComponent
         $config = [];
 
         if (empty($this->credentials)) {
-            $config['credentials'] = ['key' => $this->key, 'secret' => $this->secret];
+            $config['credentials'] = [
+                'key'    => $this->key,
+                'secret' => $this->secret,
+            ];
         } else {
             $config['credentials'] = $this->credentials;
         }
 
-        $this->key    = $config['credentials']['key'];
-        $this->secret = $config['credentials']['secret'];
-
-        if ($this->usePathStyleEndpoint === true) {
-            $config['use_path_style_endpoint'] = true;
-        }
-
-        if (!empty($this->region)) {
-            $config['region'] = $this->region;
-        }
-
-        if (!empty($this->endpoint)) {
-            $config['endpoint'] = $this->endpoint;
-        }
-
-        $config['version'] = $this->version;
+        $config['endpoint']                = $this->endpoint;
+        $config['use_path_style_endpoint'] = $this->usePathStyleEndpoint;
+        $config['region']                  = $this->region;
+        $config['version']                 = $this->version;
 
         $this->client = new S3Client($config);
 
-        return new AwsS3V3Adapter($this->client, $this->bucket, '', null, null, $this->options, $this->streamReads);
+        return new AwsS3V3Adapter($this->client, $this->bucket, $this->prefix, null, null, $this->options, $this->streamReads);
     }
 }

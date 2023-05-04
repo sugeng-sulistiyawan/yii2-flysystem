@@ -2,12 +2,11 @@
 
 namespace diecoding\flysystem;
 
-use League\Flysystem\Config;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemAdapter;
+use League\Flysystem\PathNormalizer;
+use League\Flysystem\WhitespacePathNormalizer;
 use yii\base\Component;
-use yii\helpers\FileHelper;
-use yii\helpers\StringHelper;
 
 /**
  * Class AbstractComponent
@@ -33,7 +32,7 @@ use yii\helpers\StringHelper;
  * @method void setVisibility(string $path, string $visibility)
  * @method string visibility(string $path)
  * @method string publicUrl(string $path, array $config = [])
- * @method string temporaryUrl(string $path, DateTimeInterface $expiresAt, array $config = [])
+ * @method string temporaryUrl(string $path, \DateTimeInterface $expiresAt, array $config = [])
  * @method string checksum(string $path, array $config = [])
  * 
  * @link      https://sugengsulistiyawan.my.id/
@@ -43,24 +42,14 @@ use yii\helpers\StringHelper;
 abstract class AbstractComponent extends Component
 {
     /**
-     * @var Config|array|string|null
+     * @var array
      */
-    public $config;
+    public $config = [];
 
     /** 
-     * @var string|null 
+     * @var string 
      */
     public $prefix;
-
-    /**
-     * @var string
-     */
-    public $cipherAlgo = 'aes-128-cbc';
-
-    /**
-     * @var string
-     */
-    public $secret;
 
     /**
      * @var Filesystem
@@ -83,7 +72,6 @@ abstract class AbstractComponent extends Component
     public function init()
     {
         $adapter          = $this->initAdapter();
-        $this->config     = $this->config ?? [];
         $this->filesystem = new Filesystem($adapter, $this->config);
     }
 
@@ -97,97 +85,34 @@ abstract class AbstractComponent extends Component
 
     /**
      * Normalizes a file/directory path.
-     *
-     * The normalization does the following work:
-     *
-     * - Convert all directory separators into `DIRECTORY_SEPARATOR` (e.g. "\a/b\c" becomes "a/b/c")
-     * - Remove trailing directory separators (e.g. "/a/b/c/" becomes "a/b/c")
-     * - Remove first directory separators (e.g. "/a/b/c" becomes "a/b/c")
-     * - Turn multiple consecutive slashes into a single one (e.g. "/a///b/c" becomes "a/b/c")
-     * - Remove ".." and "." based on their meanings (e.g. "/a/./b/../c" becomes "a/c")
-     *
-     * Note: For registered stream wrappers, the consecutive slashes rule
-     * and ".."/"." translations are skipped.
      * 
      * @param string $path
+     * @param PathNormalizer|null $pathNormalizer
      * @return string
      */
-    public function normalizePath(string $path)
+    public function normalizePath(string $path, PathNormalizer $pathNormalizer = null)
     {
-        $prefix = $this->prefix ? "{$this->prefix}/" : '';
-        $path     = FileHelper::normalizePath($prefix . $path, "/");
+        $pathNormalizer = $pathNormalizer ?: new WhitespacePathNormalizer();
 
-        return $path[0] === "/" ? substr($path, 1) : $path;
+        return $pathNormalizer->normalizePath($path);
     }
 
     /**
-     * Encrypts a string.
-     * 
-     * @param string $string the string to encrypt
-     * @return string the encrypted string
-     */
-    public function encrypt($string)
-    {
-        $encryptedString = openssl_encrypt($string, $this->cipherAlgo, $this->secret);
-        $encryptedString = StringHelper::base64UrlEncode(base64_encode($encryptedString));
-
-        return $encryptedString;
-    }
-
-    /**
-     * Decrypts a string. 
-     * False is returned in case it was not possible to decrypt it.
-     * 
-     * @param string $string the string to decrypt
-     * @return string the decrypted string
-     */
-    public function decrypt($string)
-    {
-        $decodedString = base64_decode(StringHelper::base64UrlDecode($string));
-        $decodedString = openssl_decrypt($decodedString, $this->cipherAlgo, $this->secret);
-
-        return $decodedString;
-    }
-
-    /**
-     * Convert To Timestamp
+     * Convert Time To \DateTimeInterface
      *
-     * @param int|string|\DateTimeInterface $dateValue
-     * @param int|null $relativeTimeBase
-     * @return int|false
+     * @param string $dateValue
+     * @return \DateTimeInterface
      */
-    public function convertToTimestamp($dateValue, $relativeTimeBase = null)
+    public function convertToDateTime($dateValue)
     {
         if ($dateValue instanceof \DateTimeInterface) {
-            $timestamp = $dateValue->getTimestamp();
-        } elseif (!is_numeric($dateValue)) {
-            $timestamp = strtotime(
-                $dateValue,
-                $relativeTimeBase === null ? time() : $relativeTimeBase
-            );
+            $datetime = $dateValue;
         } else {
-            $timestamp = (int) $dateValue;
+            $datetime = new \DateTimeImmutable($dateValue);
         }
 
-        return $timestamp;
+        return $datetime;
     }
-
-    /**
-     * Get a URL
-     * 
-     * @param string $filePath
-     * @return string
-     */
-    abstract public function getUrl(string $filePath);
-
-    /**
-     * Get a pre-signed URL
-     * 
-     * @param string $filePath
-     * @param int|string|\DateTimeInterface $expires
-     * @return string
-     */
-    abstract public function getPresignedUrl(string $filePath, $expires);
 
     /**
      * @return FilesystemAdapter $adapter

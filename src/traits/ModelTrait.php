@@ -2,8 +2,6 @@
 
 namespace diecoding\flysystem\traits;
 
-use League\Flysystem\UnableToDeleteFile;
-use League\Flysystem\UnableToWriteFile;
 use Yii;
 use yii\web\UploadedFile;
 
@@ -76,7 +74,7 @@ trait ModelTrait
         }
         $filePath   = $this->getAttributePath($attribute) . '/' . $this->{$attribute};
         $filesystem = $this->getFsComponent();
-        $filesystem->delete($this->normalizePath($filePath));
+        $filesystem->delete($filesystem->normalizePath($filePath));
 
         $this->{$attribute} = null;
     }
@@ -93,8 +91,10 @@ trait ModelTrait
         if (empty($this->{$attribute})) {
             return '';
         }
+        $filePath   = $this->getAttributePath($attribute) . '/' . $this->{$attribute};
+        $filesystem = $this->getFsComponent();
 
-        return $this->getFsComponent()->getUrl($this->getAttributePath($attribute) . $this->{$attribute});
+        return $filesystem->publicUrl($filesystem->normalizePath($filePath));
     }
 
     /**
@@ -109,11 +109,10 @@ trait ModelTrait
         if (empty($this->{$attribute})) {
             return '';
         }
+        $filePath   = $this->getAttributePath($attribute) . '/' . $this->{$attribute};
+        $filesystem = $this->getFsComponent();
 
-        return $this->getFsComponent()->getPresignedUrl(
-            $this->getAttributePath($attribute) . $this->{$attribute},
-            $this->getPresignedUrlDuration($attribute)
-        );
+        return $filesystem->temporaryUrl($filesystem->normalizePath($filePath), $this->getPresignedUrlDuration($attribute));
     }
 
     /**
@@ -121,20 +120,22 @@ trait ModelTrait
      * 
      * @param string $attribute Attribute name which holds the duration
      * 
-     * @return int|string|\DateTimeInterface URL expiration
+     * @return \DateTimeInterface URL expiration
      */
     public function getPresignedUrlDuration($attribute)
     {
+        $filesystem = $this->getFsComponent();
+
         if (empty($this->{$attribute})) {
-            return 0;
+            return $filesystem->convertToDateTime('now');
         }
 
-        return '+30 minutes';
+        return $filesystem->convertToDateTime('+5 Minutes');
     }
 
     /**
-     * List the paths on AWS S3 to each model file attribute.
-     * It must be a Key-Value array, where Key is the attribute name and Value is the base path for the file in S3.
+     * List the paths on filesystem to each model file attribute.
+     * It must be a Key-Value array, where Key is the attribute name and Value is the base path for the file in filesystem.
      * Override this method for saving each attribute in its own "folder".
      * 
      * @return array Key-Value of attributes and its paths.
@@ -145,8 +146,8 @@ trait ModelTrait
     }
 
     /**
-     * Retrieves the base path on AWS S3 for a given attribute.
-     * @see attributePaths()
+     * Retrieves the base path on filesystem for a given attribute.
+     * see `attributePaths()`
      * 
      * @param string $attribute Attribute to get its path
      * 
