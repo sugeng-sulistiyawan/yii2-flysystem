@@ -1,6 +1,7 @@
 # Yii2 Flysystem
 
 The League Flysystem for local and remote filesystems library for Yii2.
+
 This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integration for the Yii framework.
 [Flysystem](https://flysystem.thephpleague.com) is a filesystem abstraction which allows you to easily swap out a local filesystem for a remote one.
 
@@ -21,6 +22,9 @@ This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integr
   - [Instalation](#instalation)
   - [Dependencies](#dependencies)
   - [Dev. Dependencies](#dev-dependencies)
+  - [Configuring](#configuring)
+    - [Local filesystem](#local-filesystem)
+    - [AWS S3 filesystem](#aws-s3-filesystem)
   - [Using Traits](#using-traits)
     - [Model Trait](#model-trait)
       - [Using Trait Methods](#using-trait-methods)
@@ -51,7 +55,93 @@ or add to the require section of your `composer.json` file.
 
 ## Dev. Dependencies
 
-- [league/flysystem](https://github.com/thephpleague/flysystem)
+## Configuring
+
+### Local filesystem
+
+Configure application `components` as follows
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'fs' => [
+            'class'  => \diecoding\flysystem\LocalComponent::class,
+            'path'   => dirname(dirname(__DIR__)) . '/storage',       // or you can use @alias
+            'key'    => 'my-key',
+            'secret' => 'my-secret',
+            'action' => '/site/file',                                 // action for get url file
+            'prefix' => '',
+            // 'cipherAlgo' => 'aes-128-cbc',
+        ],
+    ],
+    // ...
+];
+```
+
+Configure `action` in `controller` as follows
+
+> This example at `SiteController` for `/site/file`
+
+```php
+class SiteController extends Controller
+{
+    //...
+    public function actions()
+    {
+        return [
+            // ...
+            'file' => [
+                'class' => \diecoding\flysystem\actions\LocalAction::class,
+                // 'component' => 'fs',
+            ],
+        ];
+    }
+    // ...
+}
+```
+
+### AWS S3 filesystem
+
+Either run
+
+```shell
+composer require league/flysystem-aws-s3-v3:^3.13
+```
+
+or add
+
+```shell
+"league/flysystem-aws-s3-V3": "^3.12"
+```
+
+to the `require` section of your `composer.json` file and configure application `components` as follows
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'fs' => [
+            'class'    => \diecoding\flysystem\AwsS3Component::class,
+            'endpoint' => 'http://your-endpoint'
+            'key'      => 'your-key',
+            'secret'   => 'your-secret',
+            'bucket'   => 'your-bucket',
+            'prefix'   => '',
+            // 'region'               => 'us-east-1'
+            // 'version'              => 'latest',
+            // 'usePathStyleEndpoint' => false,
+            // 'streamReads'          => false,
+            // 'options'              => [],
+            // 'credentials'          => [],
+        ],
+    ],
+    // ...
+];
+```
+
 
 ## Using Traits
 
