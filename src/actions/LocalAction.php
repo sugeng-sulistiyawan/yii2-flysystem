@@ -21,7 +21,7 @@ use yii\web\NotFoundHttpException;
  * {
  *     return [
  *         'file' => [
- *             'class' => \diecoding\flysystem\LocalAction::class,
+ *             'class' => \diecoding\flysystem\actions\LocalAction::class,
  *             'component' => 'fs',
  *         ],
  *     ];

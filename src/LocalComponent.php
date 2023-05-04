@@ -19,7 +19,8 @@ use yii\helpers\Url;
  *     'fs' => [
  *         'class' => \diecoding\flysystem\LocalComponent::class,
  *         'path' => dirname(dirname(__DIR__)) . '/storage', // or you can use @alias
- *         'secret' => 'my-secret',
+ *         'key' => 'my-key',
+ *         'secret' => 'my-secret', 
  *         'action' => '/site/file',
  *         'prefix' => '',
  *     ],
@@ -52,7 +53,12 @@ class LocalComponent extends AbstractComponent
     /**
      * @var string
      */
-    public $secret;
+    public $passphrase;
+
+    /**
+     * @var string
+     */
+    public $iv;
 
     /**
      * @var string
@@ -68,8 +74,18 @@ class LocalComponent extends AbstractComponent
             throw new InvalidConfigException('The "path" property must be set.');
         }
 
+        if (empty($this->key)) {
+            throw new InvalidConfigException('The "key" property must be set.');
+        }
+
         if (empty($this->secret)) {
             throw new InvalidConfigException('The "secret" property must be set.');
+        }
+
+        $ivLength     = strlen($this->key);
+        $mustIvLength = openssl_cipher_iv_length($this->cipherAlgo);
+        if ($ivLength !== $mustIvLength) {
+            throw new InvalidConfigException('The "key" should be exactly ' . $mustIvLength . ' bytes long, ' . $ivLength . ' given.');
         }
 
         parent::init();
@@ -120,7 +136,7 @@ class LocalComponent extends AbstractComponent
      */
     protected function encrypt($string)
     {
-        $encryptedString = openssl_encrypt($string, $this->cipherAlgo, $this->secret);
+        $encryptedString = openssl_encrypt($string, $this->cipherAlgo, $this->passphrase, OPENSSL_ZERO_PADDING, $this->iv);
         $encryptedString = StringHelper::base64UrlEncode(base64_encode($encryptedString));
 
         return $encryptedString;
@@ -136,7 +152,7 @@ class LocalComponent extends AbstractComponent
     protected function decrypt($string)
     {
         $decodedString = base64_decode(StringHelper::base64UrlDecode($string));
-        $decodedString = openssl_decrypt($decodedString, $this->cipherAlgo, $this->secret);
+        $decodedString = openssl_decrypt($decodedString, $this->cipherAlgo, $this->passphrase, OPENSSL_ZERO_PADDING, $this->iv);
 
         return $decodedString;
     }
