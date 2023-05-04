@@ -1,6 +1,6 @@
 <?php
 
-namespace diecoding\aws\s3\tests;
+namespace diecoding\flysystem\tests;
 
 /**
  * Class ExampleTest
