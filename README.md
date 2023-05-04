@@ -55,6 +55,8 @@ or add to the require section of your `composer.json` file.
 
 ## Dev. Dependencies
 
+- [league/flysystem-aws-s3-v3](https://github.com/thephpleague/flysystem-aws-s3-v3)
+
 ## Configuring
 
 ### Local filesystem
@@ -107,7 +109,7 @@ class SiteController extends Controller
 Either run
 
 ```shell
-composer require league/flysystem-aws-s3-v3:^3.13
+composer require league/flysystem-aws-s3-v3:^3.15
 ```
 
 or add
