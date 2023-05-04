@@ -286,3 +286,7 @@ protected function getPresignedUrlDuration($attribute)
 ```
 
 The value should be a valid and instance of PHP DateTimeInterface. Read [PHP documentation](https://www.php.net/manual/en/class.datetimeinterface.php) for details.
+
+---
+
+Read more docs: https://sugengsulistiyawan.my.id/docs/opensource/yii2/flysystem/
