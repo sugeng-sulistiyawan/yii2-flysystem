@@ -136,7 +136,7 @@ class LocalComponent extends AbstractComponent
      */
     protected function encrypt($string)
     {
-        $encryptedString = openssl_encrypt($string, $this->cipherAlgo, $this->secret, OPENSSL_ZERO_PADDING, $this->key);
+        $encryptedString = openssl_encrypt($string, $this->cipherAlgo, $this->secret, OPENSSL_RAW_DATA, $this->key);
         $encryptedString = StringHelper::base64UrlEncode(base64_encode($encryptedString));
 
         return $encryptedString;
@@ -152,7 +152,7 @@ class LocalComponent extends AbstractComponent
     protected function decrypt($string)
     {
         $decodedString = base64_decode(StringHelper::base64UrlDecode($string));
-        $decodedString = openssl_decrypt($decodedString, $this->cipherAlgo, $this->secret, OPENSSL_ZERO_PADDING, $this->key);
+        $decodedString = openssl_decrypt($decodedString, $this->cipherAlgo, $this->secret, OPENSSL_RAW_DATA, $this->key);
 
         return $decodedString;
     }
