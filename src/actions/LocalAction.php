@@ -71,7 +71,7 @@ class LocalAction extends Action
             $expires = (int) $params['expires'];
             $config  = (array) $params['config'];
 
-            if ($path === '' || $expires <= 0 || $expires < $now) {
+            if ($path === '' || !is_file($path) || $expires <= 0 || $expires < $now) {
                 throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
             }
         } catch (\Throwable $th) {
