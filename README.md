@@ -18,6 +18,7 @@ The League Flysystem for local and remote filesystems library for Yii2.
   - [Table of Contents](#table-of-contents)
   - [Instalation](#instalation)
   - [Dependencies](#dependencies)
+  - [Dev. Dependencies](#dev-dependencies)
   - [Using Traits](#using-traits)
     - [Model Trait](#model-trait)
       - [Using Trait Methods](#using-trait-methods)
@@ -46,7 +47,9 @@ or add to the require section of your `composer.json` file.
 - [yiisoft/yii2](https://github.com/yiisoft/yii2)
 - [league/flysystem](https://github.com/thephpleague/flysystem)
 
+## Dev. Dependencies
 
+- [league/flysystem](https://github.com/thephpleague/flysystem)
 
 ## Using Traits
 
@@ -99,22 +102,25 @@ $image = \yii\web\UploadedFile::getInstance($model, 'image');
 // This allows multiple file types upload (png,jpg,gif,...)
 // $model->image will hold "image_thumb.png" after this call finish with success
 $model->saveUploadedFile($image, 'image', 'image_thumb');
+$model->save();
 
 // Save image_thumb.png to Flysystem (fs) on //my_bucket/images/ path
 // The extension of the file will be determined by the submitted file type
 // This force the extension to *.png
 $model->saveUploadedFile($image, 'image', 'image_thumb.png', false);
+$model->save();
+
+// Remove the file with named saved on the image attribute
+// Continuing the example, here "//my_bucket/images/my_image.png" will be deleted from Flysystem (fs)
+$model->removeFile('image');
+$model->save();
 
 // Get the URL to the image on Flysystem (fs)
 $model->getFileUrl('image');
 
 // Get the presigned URL to the image on Flysystem (fs)
-// The default duration is "+30 minutes"
+// The default duration is "+5 Minutes"
 $model->getFilePresignedUrl('image');
-
-// Remove the file with named saved on the image attribute
-// Continuing the example, here "//my_bucket/images/my_image.png" will be deleted from Flysystem (fs)
-$model->removeFile('image');
 ```
 
 #### Overriding Trait Methods
@@ -159,12 +165,13 @@ protected function attributePaths()
 
 ##### getPresignedUrlDuration
 
-The default pressigned URL duration is set to "+30 minutes", override this method and use your own expiration.
+The default pressigned URL duration is set to "+5 Minutes", override this method and use your own expiration.
+Return must instance of `DateTimeInterface`
 
 ```php
 protected function getPresignedUrlDuration($attribute)
 {
-    return '+2 hours';
+    return new \DateTimeImmutable('+2 Hours');
 }
 
 // or if you want to set the attribute differently
@@ -173,15 +180,15 @@ protected function getPresignedUrlDuration($attribute)
 {
     switch ($attribute) {
         case 'badge':
-            return '+2 hours';
+            return new \DateTimeImmutable('+2 Hours');
             break;
         
         default:
-            return '+1 days';
+            return new \DateTimeImmutable('+1 Days');
             break;
     }
 }
 
 ```
 
-The value should be a valid PHP datetime operation. Read [PHP documentation](https://www.php.net/manual/en/datetime.formats.php) for details
+The value should be a valid and instance of PHP DateTimeInterface. Read [PHP documentation](https://www.php.net/manual/en/class.datetimeinterface.php) for details.

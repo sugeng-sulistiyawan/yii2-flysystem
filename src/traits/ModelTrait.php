@@ -25,6 +25,18 @@ trait ModelTrait
     }
 
     /**
+     * List the paths on filesystem to each model file attribute.
+     * It must be a Key-Value array, where Key is the attribute name and Value is the base path for the file in filesystem.
+     * Override this method for saving each attribute in its own "folder".
+     * 
+     * @return array Key-Value of attributes and its paths.
+     */
+    public function attributePaths()
+    {
+        return [];
+    }
+
+    /**
      * Save UploadedFile.
      * ! Important: This function uploads this model filename to keep consistency of the model.
      * 
@@ -32,11 +44,10 @@ trait ModelTrait
      * @param string $attribute Attribute name where the uploaded filename name will be saved
      * @param string $fileName Name which file will be saved. If empty will use the name from $file
      * @param bool $autoExtension `true` to automatically append or replace the extension to the file name. Default is `true`
-     * @param array $config
      * 
      * @return void
      */
-    public function saveUploadedFile(UploadedFile $file, $attribute, $fileName = '', $autoExtension = true, $config = [])
+    public function saveUploadedFile(UploadedFile $file, $attribute, $fileName = '', $autoExtension = true)
     {
         if ($this->hasError) {
             return;
@@ -55,7 +66,7 @@ trait ModelTrait
         fclose($handle);
 
         $filesystem = $this->getFsComponent();
-        $filesystem->write($filesystem->normalizePath($filePath), $contents, $config);
+        $filesystem->write($filesystem->normalizePath($filePath), $contents);
 
         $this->{$attribute} = $fileName;
     }
@@ -131,18 +142,6 @@ trait ModelTrait
         }
 
         return $filesystem->convertToDateTime('+5 Minutes');
-    }
-
-    /**
-     * List the paths on filesystem to each model file attribute.
-     * It must be a Key-Value array, where Key is the attribute name and Value is the base path for the file in filesystem.
-     * Override this method for saving each attribute in its own "folder".
-     * 
-     * @return array Key-Value of attributes and its paths.
-     */
-    public function attributePaths()
-    {
-        return [];
     }
 
     /**
