@@ -94,12 +94,10 @@ class AwsS3Component extends AbstractComponent
             if (empty($this->key)) {
                 throw new InvalidConfigException('The "key" property must be set.');
             }
-
             if (empty($this->secret)) {
                 throw new InvalidConfigException('The "secret" property must be set.');
             }
         }
-
         if (empty($this->bucket)) {
             throw new InvalidConfigException('The "bucket" property must be set.');
         }
