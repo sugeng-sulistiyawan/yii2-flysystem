@@ -50,6 +50,7 @@ trait EncrypterTrait
             throw new InvalidConfigException('The "iv" property must be set.');
         }
 
+        $this->normalizePassphrase();
         $this->normalizeIv();
     }
 
@@ -83,8 +84,19 @@ trait EncrypterTrait
     }
 
     /**
+     * @param int $minPassphraseLength
      * @return void
-     * @throws InvalidConfigException
+     */
+    private function normalizePassphrase($minPassphraseLength = 32)
+    {
+        $passphraseLength = strlen($this->_passphrase);
+        if ($passphraseLength < $minPassphraseLength) {
+            $this->_passphrase = str_repeat($this->_passphrase, (int) ceil($minPassphraseLength / $passphraseLength));
+        }
+    }
+
+    /**
+     * @return void
      */
     private function normalizeIv()
     {
