@@ -23,8 +23,9 @@ This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integr
   - [Dependencies](#dependencies)
   - [Dev. Dependencies](#dev-dependencies)
   - [Configuring](#configuring)
-    - [Local filesystem](#local-filesystem)
-    - [AWS S3 filesystem](#aws-s3-filesystem)
+    - [Local Filesystem](#local-filesystem)
+    - [AWS S3 Filesystem](#aws-s3-filesystem)
+    - [Global Visibility Settings](#global-visibility-settings)
   - [Using Traits](#using-traits)
     - [Model Trait](#model-trait)
       - [Using Trait Methods](#using-trait-methods)
@@ -59,7 +60,7 @@ or add to the require section of your `composer.json` file.
 
 ## Configuring
 
-### Local filesystem
+### Local Filesystem
 
 Configure application `components` as follows
 
@@ -104,7 +105,7 @@ class SiteController extends Controller
 }
 ```
 
-### AWS S3 filesystem
+### AWS S3 Filesystem
 
 Either run
 
@@ -144,6 +145,24 @@ return [
 ];
 ```
 
+### Global Visibility Settings
+
+Configure `fs` application component as follows
+
+```php
+return [
+    //...
+    'components' => [
+        //...
+        'fs' => [
+            //...
+            'config' => [
+                'visibility' => \League\Flysystem\Visibility::PRIVATE,
+            ],
+        ],
+    ],
+];
+```
 
 ## Using Traits
 
