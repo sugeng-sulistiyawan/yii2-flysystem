@@ -13,16 +13,11 @@
 		"extension",
 		"component",
 		"flysystem",
+		"filesystem",
+        "files",
 		"aws",
 		"s3",
-        "files",
-        "azure",
-        "dropbox",
-        "ftp",
-        "gridfs",
-        "rackspace",
-        "sftp",
-        "webdav"
+        "ftp"
 	],
 	"license": "MIT",
 	"support": {
@@ -36,22 +31,8 @@
 	},
 	"require-dev": {
 		"justus/flysystem-onedrive": "^2.0",
-		"league/flysystem-async-aws-s3": "^3.13",
 		"league/flysystem-aws-s3-v3": "^3.15",
-		"league/flysystem-azure-blob-storage": "^3.13",
-		"league/flysystem-ftp": "^3.13",
-		"league/flysystem-google-cloud-storage": "^3.13",
-		"league/flysystem-memory": "^3.13",
-		"league/flysystem-path-prefixing": "^3.13",
-		"league/flysystem-read-only": "^3.13",
-		"league/flysystem-sftp-v3": "^3.14",
-		"league/flysystem-webdav": "^3.13",
-		"masbug/flysystem-google-drive-ext": "^2.2",
-		"phpunit/phpunit": "~9.5.0",
-		"platformcommunity/flysystem-bunnycdn": "^3.3",
-		"royvoetman/flysystem-gitlab-storage": "^3.0",
-		"shitware-ltd/flysystem-msgraph": "^1.0",
-		"spatie/flysystem-dropbox": "^3.0"
+		"league/flysystem-ftp": "^3.15"
 	},
 	"autoload": {
 		"psr-4": {
