@@ -2,16 +2,11 @@
 
 namespace diecoding\flysystem;
 
-use DateTimeInterface;
 use diecoding\flysystem\traits\UrlGeneratorTrait;
 use League\Flysystem\Ftp\FtpAdapter;
 use League\Flysystem\Ftp\FtpConnectionOptions;
-use League\Flysystem\Local\LocalFilesystemAdapter;
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\Json;
-use yii\helpers\StringHelper;
-use yii\helpers\Url;
 
 /**
  * Class FTPComponent
@@ -152,7 +147,7 @@ class FTPComponent extends AbstractComponent
     }
 
     /**
-     * @return LocalFilesystemAdapter
+     * @return FtpAdapter
      */
     protected function initAdapter()
     {

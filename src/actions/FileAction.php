@@ -77,7 +77,7 @@ class FileAction extends Action
 
             $content        = $this->filesystem->read($params['path']);
             $mimeType       = $this->filesystem->mimeType($params['path']);
-            $attachmentName = pathinfo($params['path'], PATHINFO_BASENAME);
+            $attachmentName = (string) pathinfo($params['path'], PATHINFO_BASENAME);
         } catch (\Throwable $th) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }

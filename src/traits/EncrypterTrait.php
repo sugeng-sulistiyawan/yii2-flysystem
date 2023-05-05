@@ -2,7 +2,6 @@
 
 namespace diecoding\flysystem\traits;
 
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\StringHelper;
 
