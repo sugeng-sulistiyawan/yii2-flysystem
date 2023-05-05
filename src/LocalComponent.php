@@ -2,7 +2,6 @@
 
 namespace diecoding\flysystem;
 
-use DateTimeImmutable;
 use DateTimeInterface;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Yii;
@@ -93,11 +92,9 @@ class LocalComponent extends AbstractComponent
 
     public function publicUrl(string $path, array $config = []): string
     {
-        $config['attachmentName'] = pathinfo($path, PATHINFO_BASENAME);
-
         $params = [
-            'path'    => $this->normalizePath($this->_basePath . '/' . $path),
-            'expires' => false,
+            'path'    => $this->normalizePath($path),
+            'expires' => 0,
             'config'  => $config,
         ];
 
@@ -106,11 +103,9 @@ class LocalComponent extends AbstractComponent
 
     public function temporaryUrl(string $path, DateTimeInterface $expiresAt, array $config = []): string
     {
-        $config['attachmentName'] = pathinfo($path, PATHINFO_BASENAME);
-
         $params = [
-            'path'    => $this->normalizePath($this->_basePath . '/' . $path),
-            'expires' => DateTimeImmutable::createFromInterface($expiresAt)->getTimestamp(),
+            'path'    => $this->normalizePath($path),
+            'expires' => (int) $expiresAt->getTimestamp(),
             'config'  => $config,
         ];
 

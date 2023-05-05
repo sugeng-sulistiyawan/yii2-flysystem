@@ -22,9 +22,11 @@ This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integr
   - [Instalation](#instalation)
   - [Dependencies](#dependencies)
   - [Dev. Dependencies](#dev-dependencies)
-  - [Configuring](#configuring)
+  - [Configuration](#configuration)
     - [Local Filesystem](#local-filesystem)
     - [AWS S3 Filesystem](#aws-s3-filesystem)
+  - [Additional Configuration](#additional-configuration)
+    - [URL File Action Settings](#url-file-action-settings)
     - [Global Visibility Settings](#global-visibility-settings)
   - [Using Traits](#using-traits)
     - [Model Trait](#model-trait)
@@ -58,7 +60,7 @@ or add to the require section of your `composer.json` file.
 
 - [league/flysystem-aws-s3-v3](https://github.com/thephpleague/flysystem-aws-s3-v3)
 
-## Configuring
+## Configuration
 
 ### Local Filesystem
 
@@ -79,30 +81,7 @@ return [
             // 'cipherAlgo' => 'aes-128-cbc',
         ],
     ],
-    // ...
 ];
-```
-
-Configure `action` in `controller` as follows
-
-> This example at `SiteController` for `/site/file`
-
-```php
-class SiteController extends Controller
-{
-    //...
-    public function actions()
-    {
-        return [
-            // ...
-            'file' => [
-                'class' => \diecoding\flysystem\actions\LocalAction::class,
-                // 'component' => 'fs',
-            ],
-        ];
-    }
-    // ...
-}
 ```
 
 ### AWS S3 Filesystem
@@ -141,7 +120,51 @@ return [
             // 'credentials'          => [],
         ],
     ],
+];
+```
+
+## Additional Configuration
+
+### URL File Action Settings
+
+The following adapters have URL File Action generation capabilities:
+
+- Local Component
+- FTP Component
+
+Configure `action` in `controller` as follows
+
+> This example at `SiteController` for `/site/file`
+
+```php
+class SiteController extends Controller
+{
+    //...
+    public function actions()
+    {
+        return [
+            // ...
+            'file' => [
+                'class' => \diecoding\flysystem\actions\FileAction::class,
+                // 'component' => 'fs',
+            ],
+        ];
+    }
+}
+```
+
+> Remember to configure `action` key in `fs` application components as follows
+
+```php
+return [
     // ...
+    'components' => [
+        // ...
+        'fs' => [
+            // ...
+            'action' => '/site/file', // action for get url file
+        ],
+    ],
 ];
 ```
 
