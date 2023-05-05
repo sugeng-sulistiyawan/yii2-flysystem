@@ -29,6 +29,25 @@ This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integr
   - [Additional Configuration](#additional-configuration)
     - [URL File Action Settings](#url-file-action-settings)
     - [Global Visibility Settings](#global-visibility-settings)
+  - [Usage](#usage)
+    - [Writing or Updating Files](#writing-or-updating-files)
+    - [Reading Files](#reading-files)
+    - [Checking if a File Exists](#checking-if-a-file-exists)
+    - [Deleting Files](#deleting-files)
+    - [Getting Files Mime Type](#getting-files-mime-type)
+    - [Getting Files Timestamp / Last Modified](#getting-files-timestamp--last-modified)
+    - [Getting Files Size](#getting-files-size)
+    - [Creating Directories](#creating-directories)
+    - [Checking if a Directory Exists](#checking-if-a-directory-exists)
+    - [Deleting Directories](#deleting-directories)
+    - [Checking if a File or Directory Exists](#checking-if-a-file-or-directory-exists)
+    - [Managing Visibility](#managing-visibility)
+    - [Listing contents](#listing-contents)
+    - [Copy Files or Directories](#copy-files-or-directories)
+    - [Move Files or Directories](#move-files-or-directories)
+    - [Get URL Files](#get-url-files)
+    - [Get URL Temporary Files / Presigned URL](#get-url-temporary-files--presigned-url)
+    - [Get MD5 Hash File Contents](#get-md5-hash-file-contents)
   - [Using Traits](#using-traits)
     - [Model Trait](#model-trait)
       - [Using Trait Methods](#using-trait-methods)
@@ -234,6 +253,203 @@ return [
 ];
 ```
 
+## Usage
+
+### Writing or Updating Files
+
+To write or update file
+
+```php
+Yii::$app->fs->write('filename.ext', 'contents');
+```
+
+To write or update file using stream contents
+
+```php
+$stream = fopen('/path/to/somefile.ext', 'r+');
+Yii::$app->fs->writeStream('filename.ext', $stream);
+```
+
+### Reading Files
+
+To read file
+
+```php
+$contents = Yii::$app->fs->read('filename.ext');
+```
+
+To retrieve a read-stream
+
+```php
+$stream = Yii::$app->fs->readStream('filename.ext');
+$contents = stream_get_contents($stream);
+fclose($stream);
+```
+
+### Checking if a File Exists
+
+To check if a file exists
+
+```php
+$exists = Yii::$app->fs->fileExists('filename.ext');
+```
+
+### Deleting Files
+
+To delete file
+
+```php
+Yii::$app->fs->delete('filename.ext');
+```
+
+### Getting Files Mime Type
+
+To get file mime type
+
+```php
+$mimeType = Yii::$app->fs->mimeType('filename.ext');
+```
+
+### Getting Files Timestamp / Last Modified
+
+To get file timestamp
+
+```php
+$timestamp = Yii::$app->fs->lastModified('filename.ext');
+```
+
+### Getting Files Size
+
+To get file size
+
+```php
+$byte = Yii::$app->fs->fileSize('filename.ext');
+```
+
+### Creating Directories
+
+To create directory
+
+```php
+Yii::$app->fs->createDirectory('path/to/directory');
+```
+
+Directories are also made implicitly when writing to a deeper path
+
+```php
+Yii::$app->fs->write('path/to/filename.ext');
+```
+
+### Checking if a Directory Exists
+
+To check if a directory exists
+
+```php
+$exists = Yii::$app->fs->directoryExists('path/to/directory');
+```
+
+### Deleting Directories
+
+To delete directory
+
+```php
+Yii::$app->fs->deleteDirectory('path/to/directory');
+```
+
+### Checking if a File or Directory Exists
+
+To check if a file or directory exists
+
+```php
+$exists = Yii::$app->fs->has('path/to/directory/filename.ext');
+```
+
+### Managing Visibility
+
+Visibility is the abstraction of file permissions across multiple platforms. Visibility can be either public or private.
+
+```php
+Yii::$app->fs->write('filename.ext', 'contents', [
+    'visibility' => \League\Flysystem\Visibility::PRIVATE
+]);
+```
+
+You can also change and check visibility of existing files
+
+```php
+if (Yii::$app->fs->visibility('filename.ext') === \League\Flysystem\Visibility::PRIVATE) {
+    Yii::$app->fs->setVisibility('filename.ext', \League\Flysystem\Visibility::PUBLIC);
+}
+```
+
+### Listing contents
+
+To list contents
+
+```php
+$contents = Yii::$app->fs->listContents();
+
+foreach ($contents as $object) {
+    echo $object['basename']
+        . ' is located at' . $object['path']
+        . ' and is a ' . $object['type'];
+}
+```
+
+By default Flysystem lists the top directory non-recursively. You can supply a directory name and recursive boolean to get more precise results
+
+```php
+$contents = Yii::$app->fs->listContents('path/to/directory', true);
+```
+
+### Copy Files or Directories
+
+To copy contents
+
+```php
+Yii::$app->fs->copy('path/from/directory/filename.ext', 'path/to/directory/filename.ext', [
+    'visibility' => \League\Flysystem\Visibility::PRIVATE
+]);
+```
+
+### Move Files or Directories
+
+To move contents
+
+```php
+Yii::$app->fs->move('path/from/directory/filename.ext', 'path/to/directory/filename.ext', [
+    'visibility' => \League\Flysystem\Visibility::PRIVATE
+]);
+```
+
+### Get URL Files
+
+To get url contents
+
+```php
+Yii::$app->fs->publicUrl('path/to/directory/filename.ext');
+```
+
+### Get URL Temporary Files / Presigned URL
+
+To get temporary url contents
+
+```php
+$expiresAt = new \DateTimeImmutable('+10 Minutes');
+
+Yii::$app->fs->temporaryUrl('path/to/directory/filename.ext', $expiresAt);
+```
+
+The `$expiresAt` should be a valid and instance of `PHP DateTimeInterface`. Read [PHP documentation](https://www.php.net/manual/en/class.datetimeinterface.php) for details.
+
+### Get MD5 Hash File Contents
+
+To get MD5 hash of the file contents
+
+```php
+Yii::$app->fs->checksum('path/to/directory/filename.ext');
+```
+
 ## Using Traits
 
 ### Model Trait
@@ -374,7 +590,7 @@ protected function getPresignedUrlDuration($attribute)
 
 ```
 
-The value should be a valid and instance of PHP DateTimeInterface. Read [PHP documentation](https://www.php.net/manual/en/class.datetimeinterface.php) for details.
+The value should be a valid and instance of `PHP DateTimeInterface`. Read [PHP documentation](https://www.php.net/manual/en/class.datetimeinterface.php) for details.
 
 ---
 
