@@ -42,13 +42,13 @@ This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integr
 Package is available on [Packagist](https://packagist.org/packages/diecoding/yii2-flysystem), you can install it using [Composer](https://getcomposer.org).
 
 ```shell
-composer require diecoding/yii2-flysystem "@dev"
+composer require diecoding/yii2-flysystem "^1.0"
 ```
 
 or add to the require section of your `composer.json` file.
 
 ```shell
-"diecoding/yii2-flysystem": "@dev"
+"diecoding/yii2-flysystem": "^1.0"
 ```
 
 ## Dependencies
