@@ -136,7 +136,7 @@ composer require league/flysystem-ftp:^3.15
 or add
 
 ```shell
-"league/flysystem-aws-s3-V3": "^3.15"
+"league/flysystem-ftp": "^3.15"
 ```
 
 to the `require` section of your `composer.json` file and configure application `components` as follows
