@@ -51,7 +51,7 @@ trait EncrypterTrait
             throw new InvalidConfigException('The "iv" property must be set.');
         }
 
-        $this->validateIvLength();
+        $this->normalizeIv();
     }
 
     /**
@@ -84,17 +84,17 @@ trait EncrypterTrait
     }
 
     /**
-     * Validate IV Length
-     * 
      * @return void
      * @throws InvalidConfigException
      */
-    private function validateIvLength()
+    private function normalizeIv()
     {
         $ivLength     = strlen($this->_iv);
         $mustIvLength = openssl_cipher_iv_length($this->_cipherAlgo);
-        if ($ivLength !== $mustIvLength) {
-            throw new InvalidConfigException('The "iv" should be exactly ' . $mustIvLength . ' bytes long, ' . $ivLength . ' given.');
+        if ($ivLength < $mustIvLength) {
+            $this->_iv = str_repeat($this->_iv, (int) ceil($mustIvLength / $ivLength));
         }
+
+        $this->_iv = substr($this->_iv, 0, $mustIvLength);
     }
 }

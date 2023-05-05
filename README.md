@@ -25,6 +25,7 @@ This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integr
   - [Configuration](#configuration)
     - [Local Filesystem](#local-filesystem)
     - [AWS S3 Filesystem](#aws-s3-filesystem)
+    - [FTP Filesystem](#ftp-filesystem)
   - [Additional Configuration](#additional-configuration)
     - [URL File Action Settings](#url-file-action-settings)
     - [Global Visibility Settings](#global-visibility-settings)
@@ -59,6 +60,7 @@ or add to the require section of your `composer.json` file.
 ## Dev. Dependencies
 
 - [league/flysystem-aws-s3-v3](https://github.com/thephpleague/flysystem-aws-s3-v3)
+- [league/flysystem-ftp](https://github.com/thephpleague/flysystem-ftp)
 
 ## Configuration
 
@@ -73,10 +75,10 @@ return [
         // ...
         'fs' => [
             'class'  => \diecoding\flysystem\LocalComponent::class,
-            'path'   => dirname(dirname(__DIR__)) . '/storage',       // or you can use @alias
+            'path'   => dirname(dirname(__DIR__)) . '/storage', // or you can use @alias
             'key'    => 'my-key',
             'secret' => 'my-secret',
-            'action' => '/site/file',                                 // action for get url file
+            'action' => '/site/file', // action for get url file
             'prefix' => '',
             // 'cipherAlgo' => 'aes-128-cbc',
         ],
@@ -95,7 +97,7 @@ composer require league/flysystem-aws-s3-v3:^3.15
 or add
 
 ```shell
-"league/flysystem-aws-s3-V3": "^3.12"
+"league/flysystem-aws-s3-V3": "^3.15"
 ```
 
 to the `require` section of your `composer.json` file and configure application `components` as follows
@@ -118,6 +120,51 @@ return [
             // 'streamReads'          => false,
             // 'options'              => [],
             // 'credentials'          => [],
+        ],
+    ],
+];
+```
+
+### FTP Filesystem
+
+Either run
+
+```shell
+composer require league/flysystem-ftp:^3.15
+```
+
+or add
+
+```shell
+"league/flysystem-aws-s3-V3": "^3.15"
+```
+
+to the `require` section of your `composer.json` file and configure application `components` as follows
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'fs' => [
+            'class'    => \diecoding\flysystem\FTPComponent::class,
+            'host'     => 'hostname',
+            'root'     => '/root/path/', // or you can use @alias
+            'username' => 'username',
+            'password' => 'password',
+            // 'port'                            => 21,
+            // 'ssl'                             => false,
+            // 'timeout'                         => 90,
+            // 'utf8'                            => false,
+            // 'passive'                         => true,
+            // 'transferMode'                    => FTP_BINARY,
+            // 'systemType'                      => null,         // 'windows' or 'unix'
+            // 'ignorePassiveAddress'            => null,         // true or false
+            // 'timestampsOnUnixListingsEnabled' => false,
+            // 'recurseManually'                 => true,
+            // 'useRawListOptions'               => null,         // true or false
+            'action' => '/site/file', // action for get url file
+            'prefix' => '',
         ],
     ],
 ];
