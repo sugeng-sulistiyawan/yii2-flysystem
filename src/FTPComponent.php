@@ -36,8 +36,6 @@ use yii\base\InvalidConfigException;
  * ],
  * ```
  * 
- * @package diecoding\flysystem
- * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
@@ -141,7 +139,7 @@ class FTPComponent extends AbstractComponent
             throw new InvalidConfigException('The "password" property must be set.');
         }
 
-        $this->setEncrypter($this->password, $this->username);
+        $this->initEncrypter($this->password, $this->username);
 
         parent::init();
     }

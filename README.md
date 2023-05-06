@@ -110,13 +110,13 @@ return [
 Either run
 
 ```shell
-composer require league/flysystem-aws-s3-v3:^3.15
+composer require league/flysystem-aws-s3-v3:^3.0
 ```
 
 or add
 
 ```shell
-"league/flysystem-aws-s3-v3": "^3.15"
+"league/flysystem-aws-s3-v3": "^3.0"
 ```
 
 to the `require` section of your `composer.json` file and configure application `components` as follows
@@ -149,13 +149,13 @@ return [
 Either run
 
 ```shell
-composer require league/flysystem-ftp:^3.15
+composer require league/flysystem-ftp:^3.0
 ```
 
 or add
 
 ```shell
-"league/flysystem-ftp": "^3.15"
+"league/flysystem-ftp": "^3.0"
 ```
 
 to the `require` section of your `composer.json` file and configure application `components` as follows

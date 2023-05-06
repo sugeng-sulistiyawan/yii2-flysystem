@@ -23,8 +23,6 @@ use yii\base\InvalidConfigException;
  * ],
  * ```
  * 
- * @package diecoding\flysystem
- * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
@@ -68,7 +66,7 @@ class LocalComponent extends AbstractComponent
             throw new InvalidConfigException('The "key" property must be set.');
         }
 
-        $this->setEncrypter($this->secret, $this->key);
+        $this->initEncrypter($this->secret, $this->key);
 
         parent::init();
     }

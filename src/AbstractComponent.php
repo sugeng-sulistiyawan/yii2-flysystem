@@ -10,8 +10,6 @@ use yii\base\Component;
 
 /**
  * Class AbstractComponent
- *
- * @package diecoding\flysystem
  * 
  * @method bool fileExists(string $location)
  * @method bool directoryExists(string $location)

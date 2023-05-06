@@ -29,8 +29,6 @@ use yii\web\NotFoundHttpException;
  * }
  * ```
  * 
- * @package diecoding\flysystem\actions
- * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023

@@ -8,8 +8,6 @@ use yii\web\UploadedFile;
 /**
  * Trait ModelTrait for Model
  * 
- * @package diecoding\flysystem\traits
- * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
@@ -25,18 +23,6 @@ trait ModelTrait
     }
 
     /**
-     * List the paths on filesystem to each model file attribute.
-     * It must be a Key-Value array, where Key is the attribute name and Value is the base path for the file in filesystem.
-     * Override this method for saving each attribute in its own "folder".
-     * 
-     * @return array Key-Value of attributes and its paths.
-     */
-    public function attributePaths()
-    {
-        return [];
-    }
-
-    /**
      * Save UploadedFile.
      * ! Important: This function uploads this model filename to keep consistency of the model.
      * 
@@ -49,7 +35,8 @@ trait ModelTrait
      */
     public function saveUploadedFile(UploadedFile $file, $attribute, $fileName = '', $autoExtension = true)
     {
-        if ($this->hasError) {
+        /** @var \yii\db\ActiveRecord|self $this */
+        if ($this->hasErrors()) {
             return;
         }
         if (empty($fileName)) {
@@ -59,6 +46,11 @@ trait ModelTrait
             $_file    = (string) pathinfo($fileName, PATHINFO_FILENAME);
             $fileName = $_file . '.' . $file->extension;
         }
+
+        $this->{$attribute} = $fileName;
+        if (!$this->validate($attribute)) {
+            return;
+        }
         $filePath  = $this->getAttributePath($attribute) . '/' . $fileName;
         $localPath = $file->tempName;
         $handle    = fopen($localPath, 'r');
@@ -67,8 +59,6 @@ trait ModelTrait
 
         $filesystem = $this->getFsComponent();
         $filesystem->write($filesystem->normalizePath($filePath), $contents);
-
-        $this->{$attribute} = $fileName;
     }
 
     /**
@@ -80,6 +70,7 @@ trait ModelTrait
      */
     public function removeFile($attribute)
     {
+        /** @var \yii\db\ActiveRecord|self $this */
         if (empty($this->{$attribute})) {
             return;
         }
@@ -99,6 +90,7 @@ trait ModelTrait
      */
     public function getFileUrl($attribute)
     {
+        /** @var \yii\db\ActiveRecord|self $this */
         if (empty($this->{$attribute})) {
             return '';
         }
@@ -117,6 +109,7 @@ trait ModelTrait
      */
     public function getFilePresignedUrl($attribute)
     {
+        /** @var \yii\db\ActiveRecord|self $this */
         if (empty($this->{$attribute})) {
             return '';
         }
@@ -127,21 +120,35 @@ trait ModelTrait
     }
 
     /**
+     * List the paths on filesystem to each model file attribute.
+     * It must be a Key-Value array, where Key is the attribute name and Value is the base path for the file in filesystem.
+     * Override this method for saving each attribute in its own "folder".
+     * 
+     * @return array Key-Value of attributes and its paths.
+     */
+    protected function attributePaths()
+    {
+        return [];
+    }
+
+    /**
      * Retrieves the URL signature expiration.
      * 
      * @param string $attribute Attribute name which holds the duration
      * 
      * @return \DateTimeInterface URL expiration
      */
-    public function getPresignedUrlDuration($attribute)
+    protected function getPresignedUrlDuration($attribute)
     {
         $filesystem = $this->getFsComponent();
+        $dateValue  = '+5 Minutes';
 
+        /** @var \yii\db\ActiveRecord|self $this */
         if (empty($this->{$attribute})) {
-            return $filesystem->convertToDateTime('now');
+            $dateValue = 'now';
         }
 
-        return $filesystem->convertToDateTime('+5 Minutes');
+        return $filesystem->convertToDateTime($dateValue);
     }
 
     /**
@@ -152,7 +159,7 @@ trait ModelTrait
      * 
      * @return string The path where all file of that attribute should be stored. Returns empty string if the attribute isn't in the list.
      */
-    public function getAttributePath($attribute)
+    protected function getAttributePath($attribute)
     {
         $paths = $this->attributePaths();
         if (array_key_exists($attribute, $paths)) {

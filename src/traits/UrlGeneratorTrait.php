@@ -9,8 +9,6 @@ use yii\helpers\Url;
 /**
  * Trait UrlGeneratorTrait for Model
  * 
- * @package diecoding\flysystem\traits
- * 
  * @method string normalizePath(string $path, \League\Flysystem\PathNormalizer $pathNormalizer = null)
  * 
  * @link      https://sugengsulistiyawan.my.id/

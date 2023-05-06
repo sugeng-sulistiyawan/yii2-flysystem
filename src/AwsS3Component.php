@@ -8,8 +8,6 @@ use yii\base\InvalidConfigException;
 
 /**
  * Class AwsS3Component
- *
- * @package diecoding\flysystem
  * 
  * ```php
  * 'components' => [
