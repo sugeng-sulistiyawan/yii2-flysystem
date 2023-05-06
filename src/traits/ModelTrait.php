@@ -35,7 +35,6 @@ trait ModelTrait
      */
     public function saveUploadedFile(UploadedFile $file, $attribute, $fileName = '', $autoExtension = true)
     {
-        /** @var \yii\db\ActiveRecord|self $this */
         if ($this->hasErrors()) {
             return;
         }
@@ -70,7 +69,6 @@ trait ModelTrait
      */
     public function removeFile($attribute)
     {
-        /** @var \yii\db\ActiveRecord|self $this */
         if (empty($this->{$attribute})) {
             return;
         }
@@ -90,7 +88,6 @@ trait ModelTrait
      */
     public function getFileUrl($attribute)
     {
-        /** @var \yii\db\ActiveRecord|self $this */
         if (empty($this->{$attribute})) {
             return '';
         }
@@ -109,7 +106,6 @@ trait ModelTrait
      */
     public function getFilePresignedUrl($attribute)
     {
-        /** @var \yii\db\ActiveRecord|self $this */
         if (empty($this->{$attribute})) {
             return '';
         }
@@ -143,7 +139,6 @@ trait ModelTrait
         $filesystem = $this->getFsComponent();
         $dateValue  = '+5 Minutes';
 
-        /** @var \yii\db\ActiveRecord|self $this */
         if (empty($this->{$attribute})) {
             $dateValue = 'now';
         }
@@ -168,4 +163,36 @@ trait ModelTrait
 
         return '';
     }
+
+    /**
+     * Returns a value indicating whether there is any validation error.
+     * @param string|null $attribute attribute name. Use null to check all attributes.
+     * @return bool whether there is any error.
+     */
+    abstract public function hasErrors($attribute = null);
+
+    /**
+     * Performs the data validation.
+     *
+     * This method executes the validation rules applicable to the current [[scenario]].
+     * The following criteria are used to determine whether a rule is currently applicable:
+     *
+     * - the rule must be associated with the attributes relevant to the current scenario;
+     * - the rules must be effective for the current scenario.
+     *
+     * This method will call [[beforeValidate()]] and [[afterValidate()]] before and
+     * after the actual validation, respectively. If [[beforeValidate()]] returns false,
+     * the validation will be cancelled and [[afterValidate()]] will not be called.
+     *
+     * Errors found during the validation can be retrieved via [[getErrors()]],
+     * [[getFirstErrors()]] and [[getFirstError()]].
+     *
+     * @param string[]|string|null $attributeNames attribute name or list of attribute names
+     * that should be validated. If this parameter is empty, it means any attribute listed in
+     * the applicable validation rules should be validated.
+     * @param bool $clearErrors whether to call [[clearErrors()]] before performing validation
+     * @return bool whether the validation is successful without any error.
+     * @throws InvalidArgumentException if the current scenario is unknown.
+     */
+    abstract public function validate($attributeNames = null, $clearErrors = true);
 }
