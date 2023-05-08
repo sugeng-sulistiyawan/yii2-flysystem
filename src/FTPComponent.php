@@ -9,12 +9,12 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * Class FTPComponent
+ * Class FtpComponent
  * 
  * ```php
  * 'components' => [
  *     'fs' => [
- *         'class' => \diecoding\flysystem\FTPComponent::class,
+ *         'class' => \diecoding\flysystem\FtpComponent::class,
  *         'host' => 'hostname',
  *         'root' => '/root/path/', // or you can use @alias
  *         'username' => 'username',
@@ -40,7 +40,7 @@ use yii\base\InvalidConfigException;
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
  */
-class FTPComponent extends AbstractComponent
+class FtpComponent extends AbstractComponent
 {
     use UrlGeneratorTrait;
 
@@ -112,7 +112,7 @@ class FTPComponent extends AbstractComponent
     /**
      * @var bool
      */
-    public $recurseManually = false;
+    public $recurseManually = true;
 
     /**
      * @var bool|null
@@ -170,9 +170,7 @@ class FTPComponent extends AbstractComponent
             'recurseManually',
             'useRawListOptions',
         ] as $property) {
-            if ($this->$property !== null) {
-                $options[$property] = $this->$property;
-            }
+            $options[$property] = $this->$property;
         }
 
         $this->_connectionOptions = FtpConnectionOptions::fromArray($options);

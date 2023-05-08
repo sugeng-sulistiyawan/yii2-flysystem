@@ -2,6 +2,8 @@
 
 namespace diecoding\flysystem;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\PathNormalizer;
@@ -96,14 +98,18 @@ abstract class AbstractComponent extends Component
     }
 
     /**
-     * Convert Time To \DateTimeInterface
+     * Convert Time To DateTimeImmutable
      *
-     * @param string $dateValue
-     * @return \DateTimeInterface
+     * @param int|string|DateTimeInterface $dateValue
+     * @return DateTimeImmutable
      */
     public function convertToDateTime($dateValue)
     {
-        return new \DateTimeImmutable($dateValue);
+        if ($dateValue instanceof DateTimeInterface) {
+            return DateTimeImmutable::createFromInterface($dateValue);
+        }
+
+        return new DateTimeImmutable($dateValue);
     }
 
     /**
