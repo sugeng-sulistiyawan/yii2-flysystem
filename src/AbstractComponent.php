@@ -54,6 +54,11 @@ abstract class AbstractComponent extends Component
      */
     public $prefix;
 
+    /** 
+     * @var string 
+     */
+    public $directorySeparator = '/';
+
     /**
      * @var Filesystem
      */
