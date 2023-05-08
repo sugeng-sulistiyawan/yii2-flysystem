@@ -17,7 +17,8 @@
         "files",
 		"aws",
 		"s3",
-        "ftp"
+        "ftp",
+		"sftp"
 	],
 	"license": "MIT",
 	"support": {
