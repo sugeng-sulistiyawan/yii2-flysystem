@@ -241,6 +241,7 @@ The following adapters have URL File Action generation capabilities:
 
 - Local Component
 - FTP Component
+- SFTP Component
 
 Configure `action` in `controller` as follows
 
