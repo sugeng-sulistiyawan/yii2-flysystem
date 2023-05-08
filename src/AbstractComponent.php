@@ -35,6 +35,9 @@ use yii\base\Component;
  * @method string temporaryUrl(string $path, \DateTimeInterface $expiresAt, array $config = [])
  * @method string checksum(string $path, array $config = [])
  * 
+ * @method string encrypt(string $string)
+ * @method string decrypt(string $string)
+ * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
