@@ -138,7 +138,7 @@ class SftpComponent extends AbstractComponent
     protected function initAdapter()
     {
         $this->root = (string) Yii::getAlias($this->root);
-        $this->root = FileHelper::normalizePath($this->root . '/' . $this->prefix);
+        $this->root = FileHelper::normalizePath($this->root . '/' . $this->prefix, '/');
 
         $options = [];
         foreach ([
