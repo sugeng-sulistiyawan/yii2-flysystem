@@ -7,6 +7,7 @@ use League\Flysystem\Ftp\FtpAdapter;
 use League\Flysystem\Ftp\FtpConnectionOptions;
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\FileHelper;
 
 /**
  * Class FtpComponent
@@ -150,7 +151,7 @@ class FtpComponent extends AbstractComponent
     protected function initAdapter()
     {
         $this->root = (string) Yii::getAlias($this->root);
-        $this->root = $this->normalizePath($this->root . '/' . $this->prefix);
+        $this->root = FileHelper::normalizePath($this->root . '/' . $this->prefix);
 
         $options = [];
         foreach ([

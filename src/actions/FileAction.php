@@ -3,7 +3,6 @@
 namespace diecoding\flysystem\actions;
 
 use DateTimeImmutable;
-use diecoding\flysystem\LocalComponent;
 use Yii;
 use yii\base\Action;
 use yii\helpers\Json;
@@ -41,7 +40,7 @@ class FileAction extends Action
     public $component = 'fs';
 
     /**
-     * @var mixed|LocalComponent
+     * @var \diecoding\flysystem\AbstractComponent|mixed
      */
     protected $filesystem;
 

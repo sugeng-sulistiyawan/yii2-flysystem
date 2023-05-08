@@ -6,6 +6,7 @@ use diecoding\flysystem\traits\UrlGeneratorTrait;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\FileHelper;
 
 /**
  * Class LocalComponent
@@ -77,7 +78,7 @@ class LocalComponent extends AbstractComponent
     protected function initAdapter()
     {
         $this->path      = (string) Yii::getAlias($this->path);
-        $this->_location = $this->normalizePath($this->path . '/' . $this->prefix);
+        $this->_location = FileHelper::normalizePath($this->path . '/' . $this->prefix);
 
         return new LocalFilesystemAdapter($this->_location);
     }
