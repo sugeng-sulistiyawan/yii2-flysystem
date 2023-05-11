@@ -140,7 +140,7 @@ class FtpComponent extends AbstractComponent
             throw new InvalidConfigException('The "password" property must be set.');
         }
 
-        $this->initEncrypter($this->password, $this->username);
+        $this->initEncrypter($this->password);
 
         parent::init();
     }

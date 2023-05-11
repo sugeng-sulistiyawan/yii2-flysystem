@@ -67,7 +67,7 @@ class LocalComponent extends AbstractComponent
             throw new InvalidConfigException('The "key" property must be set.');
         }
 
-        $this->initEncrypter($this->secret, $this->key);
+        $this->initEncrypter($this->secret);
 
         parent::init();
     }

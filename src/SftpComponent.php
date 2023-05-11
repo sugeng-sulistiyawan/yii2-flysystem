@@ -127,7 +127,7 @@ class SftpComponent extends AbstractComponent
             throw new InvalidConfigException('The "root" property must be set.');
         }
 
-        $this->initEncrypter($this->passphrase ?? $this->password ?? md5($this->root), $this->username);
+        $this->initEncrypter($this->passphrase ?? $this->password ?? $this->username);
 
         parent::init();
     }

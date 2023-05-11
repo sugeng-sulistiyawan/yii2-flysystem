@@ -2,6 +2,7 @@
 
 namespace diecoding\flysystem\traits;
 
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\helpers\StringHelper;
 
@@ -17,17 +18,7 @@ trait EncrypterTrait
     /**
      * @var string
      */
-    private $_cipherAlgo;
-
-    /**
-     * @var string
-     */
     private $_passphrase;
-
-    /**
-     * @var string
-     */
-    private $_iv;
 
     /**
      * Init Encrypter
@@ -38,12 +29,9 @@ trait EncrypterTrait
      * @return void
      * @throws InvalidConfigException
      */
-    public function initEncrypter($passphrase, $iv, $cipherAlgo = 'aes-128-cbc')
+    public function initEncrypter($passphrase)
     {
-        $this->_cipherAlgo = $cipherAlgo;
-
         $this->normalizePassphrase($passphrase);
-        $this->normalizeIv($iv);
     }
 
     /**
@@ -54,7 +42,7 @@ trait EncrypterTrait
      */
     public function encrypt($string)
     {
-        $encryptedString = openssl_encrypt($string, $this->_cipherAlgo, $this->_passphrase, OPENSSL_RAW_DATA, $this->_iv);
+        $encryptedString = Yii::$app->getSecurity()->encryptByPassword($string, $this->_passphrase);
         $encryptedString = StringHelper::base64UrlEncode($encryptedString);
 
         return $encryptedString;
@@ -70,7 +58,7 @@ trait EncrypterTrait
     public function decrypt($string)
     {
         $decodedString = StringHelper::base64UrlDecode($string);
-        $decodedString = openssl_decrypt($decodedString, $this->_cipherAlgo, $this->_passphrase, OPENSSL_RAW_DATA, $this->_iv);
+        $decodedString = Yii::$app->getSecurity()->decryptByPassword($decodedString, $this->_passphrase);
 
         return $decodedString;
     }
@@ -82,38 +70,17 @@ trait EncrypterTrait
      * @return void
      * @throws InvalidConfigException
      */
-    private function normalizePassphrase($passphrase, $minPassphraseLength = 32)
+    private function normalizePassphrase($passphrase)
     {
         $this->_passphrase = $passphrase;
         if (empty($this->_passphrase)) {
             throw new InvalidConfigException('The "passphrase" property must be set.');
         }
 
-        $passphraseLength = strlen($this->_passphrase);
+        $minPassphraseLength = 32;
+        $passphraseLength    = strlen($this->_passphrase);
         if ($passphraseLength < $minPassphraseLength) {
             $this->_passphrase = str_repeat($this->_passphrase, (int) ceil($minPassphraseLength / $passphraseLength));
         }
-    }
-
-    /**
-     * @param string $iv
-     * 
-     * @return void
-     * @throws InvalidConfigException
-     */
-    private function normalizeIv($iv)
-    {
-        $this->_iv = $iv;
-        if (empty($this->_iv)) {
-            throw new InvalidConfigException('The "iv" property must be set.');
-        }
-
-        $ivLength     = strlen($this->_iv);
-        $mustIvLength = openssl_cipher_iv_length($this->_cipherAlgo);
-        if ($ivLength < $mustIvLength) {
-            $this->_iv = str_repeat($this->_iv, (int) ceil($mustIvLength / $ivLength));
-        }
-
-        $this->_iv = substr($this->_iv, 0, $mustIvLength);
     }
 }
