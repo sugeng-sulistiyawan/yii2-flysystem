@@ -53,12 +53,12 @@ trait EncrypterTrait
      * False is returned in case it was not possible to decrypt it.
      * 
      * @param string $string the string to decrypt
-     * @return string the decrypted string
+     * @return string|bool the decrypted string or false on authentication failure
      */
     public function decrypt($string)
     {
         $decodedString = StringHelper::base64UrlDecode($string);
-        $decodedString = (string) Yii::$app->getSecurity()->decryptByPassword($decodedString, $this->_passphrase);
+        $decodedString = Yii::$app->getSecurity()->decryptByPassword($decodedString, $this->_passphrase);
 
         return $decodedString;
     }
