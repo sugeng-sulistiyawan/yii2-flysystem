@@ -58,7 +58,7 @@ trait EncrypterTrait
     public function decrypt($string)
     {
         $decodedString = StringHelper::base64UrlDecode($string);
-        $decodedString = Yii::$app->getSecurity()->decryptByPassword($decodedString, $this->_passphrase);
+        $decodedString = (string) Yii::$app->getSecurity()->decryptByPassword($decodedString, $this->_passphrase);
 
         return $decodedString;
     }
