@@ -1,7 +1,7 @@
 {
 	"name": "diecoding/yii2-flysystem",
 	"description": "The League Flysystem for local and remote filesystems library for Yii2",
-	"version": "v1.2.2",
+	"version": "v1.3.0",
 	"type": "library",
 	"keywords": [
 		"yii2",

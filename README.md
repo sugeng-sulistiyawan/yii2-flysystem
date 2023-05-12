@@ -97,11 +97,9 @@ return [
         'fs' => [
             'class'  => \diecoding\flysystem\LocalComponent::class,
             'path'   => dirname(dirname(__DIR__)) . '/storage', // or you can use @alias
-            'key'    => 'my-key',
             'secret' => 'my-secret',
             'action' => '/site/file', // action for get url file
             'prefix' => '',
-            // 'cipherAlgo' => 'aes-128-cbc',
         ],
     ],
 ];

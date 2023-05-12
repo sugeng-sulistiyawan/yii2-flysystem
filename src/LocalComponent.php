@@ -16,7 +16,6 @@ use yii\helpers\FileHelper;
  *     'fs' => [
  *         'class' => \diecoding\flysystem\LocalComponent::class,
  *         'path' => dirname(dirname(__DIR__)) . '/storage', // or you can use @alias
- *         'key' => 'my-key',
  *         'secret' => 'my-secret', 
  *         'action' => '/site/file',
  *         'prefix' => '',
@@ -45,11 +44,6 @@ class LocalComponent extends AbstractComponent
     /**
      * @var string
      */
-    public $key;
-
-    /**
-     * @var string
-     */
     protected $_location;
 
     /**
@@ -62,9 +56,6 @@ class LocalComponent extends AbstractComponent
         }
         if (empty($this->secret)) {
             throw new InvalidConfigException('The "secret" property must be set.');
-        }
-        if (empty($this->key)) {
-            throw new InvalidConfigException('The "key" property must be set.');
         }
 
         $this->initEncrypter($this->secret);
