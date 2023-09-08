@@ -8,3 +8,4 @@
 /.scrutinizer.yml   export-ignore
 /tests 				export-ignore
 /README.md          export-ignore
+/.vscode            export-ignore
