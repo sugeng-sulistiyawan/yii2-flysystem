@@ -16,9 +16,36 @@ use yii\helpers\StringHelper;
 trait EncrypterTrait
 {
     /**
+     * @var string The cipher to use for encryption and decryption.
+     */
+    public $cipher = 'AES-128-CBC';
+    /**
+     * @var array[] Look-up table of block sizes and key sizes for each supported OpenSSL cipher.
+     *
+     * In each element, the key is one of the ciphers supported by OpenSSL (@see openssl_get_cipher_methods()).
+     * The value is an array of two integers, the first is the cipher's block size in bytes and the second is
+     * the key size in bytes.
+     *
+     * > Warning: All OpenSSL ciphers that we recommend are in the default value, i.e. AES in CBC mode.
+     *
+     * > Note: Yii's encryption protocol uses the same size for cipher key, HMAC signature key and key
+     * derivation salt.
+     */
+    public $allowedCiphers = [
+        'AES-128-CBC' => [16, 16],
+        'AES-192-CBC' => [16, 24],
+        'AES-256-CBC' => [16, 32],
+    ];
+
+    /**
      * @var string
      */
     private $_passphrase;
+
+    /**
+     * @var string
+     */
+    private $_iv;
 
     /**
      * Init Encrypter
@@ -31,6 +58,13 @@ trait EncrypterTrait
      */
     public function initEncrypter($passphrase)
     {
+        if (!extension_loaded('openssl')) {
+            throw new InvalidConfigException('Encryption requires the OpenSSL PHP extension');
+        }
+        if (!isset($this->allowedCiphers[$this->cipher][0], $this->allowedCiphers[$this->cipher][1])) {
+            throw new InvalidConfigException($this->cipher . ' is not an allowed cipher');
+        }
+
         $this->normalizePassphrase($passphrase);
     }
 
@@ -42,10 +76,12 @@ trait EncrypterTrait
      */
     public function encrypt($string)
     {
-        $encryptedString = Yii::$app->getSecurity()->encryptByPassword($string, $this->_passphrase);
-        $encryptedString = StringHelper::base64UrlEncode($encryptedString);
+        $encrypted = openssl_encrypt($string, $this->cipher, $this->_passphrase, OPENSSL_RAW_DATA, $this->_iv);
+        if ($encrypted === false) {
+            throw new \yii\base\Exception('OpenSSL failure on encryption: ' . openssl_error_string());
+        }
 
-        return $encryptedString;
+        return StringHelper::base64UrlEncode($encrypted);
     }
 
     /**
@@ -57,10 +93,13 @@ trait EncrypterTrait
      */
     public function decrypt($string)
     {
-        $decodedString = StringHelper::base64UrlDecode($string);
-        $decodedString = Yii::$app->getSecurity()->decryptByPassword($decodedString, $this->_passphrase);
+        $encrypted = StringHelper::base64UrlDecode($string);
+        $decrypted = openssl_decrypt($encrypted, $this->cipher, $this->_passphrase, OPENSSL_RAW_DATA, $this->_iv);
+        if ($decrypted === false) {
+            throw new \yii\base\Exception('OpenSSL failure on decryption: ' . openssl_error_string());
+        }
 
-        return $decodedString;
+        return $decrypted;
     }
 
     /**
@@ -82,5 +121,13 @@ trait EncrypterTrait
         if ($passphraseLength < $minPassphraseLength) {
             $this->_passphrase = str_repeat($this->_passphrase, (int) ceil($minPassphraseLength / $passphraseLength));
         }
+
+        list($blockSize, $keySize) = $this->allowedCiphers[$this->cipher];
+        $this->_iv                 = Yii::$app->id . Yii::$app->name;
+        $ivLength                  = strlen($this->_iv);
+        if ($ivLength < $blockSize) {
+            $this->_iv = str_repeat($this->_iv, (int) ceil($blockSize / $ivLength));
+        }
+        $this->_iv = substr($this->_iv, 0, $blockSize);
     }
 }
