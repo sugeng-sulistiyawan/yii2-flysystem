@@ -1,12 +1,7 @@
 {
 	"name": "diecoding/yii2-flysystem",
 	"description": "The League Flysystem for local and remote filesystems library for Yii2",
-	"authors": [
-		{
-			"name": "Sugeng Sulistiyawan",
-			"email": "sugeng.sulistiyawan@gmail.com"
-		}
-	],
+	"version": "v1.3.0",
 	"type": "library",
 	"keywords": [
 		"yii2",
@@ -17,22 +12,37 @@
         "files",
 		"aws",
 		"s3",
-        "ftp"
+        "ftp",
+		"sftp"
 	],
+	"homepage": "https://github.com/sugeng-sulistiyawan/yii2-flysystem",
 	"license": "MIT",
+	"authors": [
+		{
+			"name": "Sugeng Sulistiyawan",
+			"email": "sugeng.sulistiyawan@gmail.com"
+		}
+	],
 	"support": {
 		"issues": "https://github.com/sugeng-sulistiyawan/yii2-flysystem/issues",
 		"source": "https://github.com/sugeng-sulistiyawan/yii2-flysystem"
 	},
+	"funding": [
+		{
+			"type": "github",
+			"url": "https://github.com/sponsors/sugeng-sulistiyawan"
+		}
+	],
 	"require": {
 		"php": ">=8.0",
 		"league/flysystem": "^3.0",
 		"yiisoft/yii2": "~2.0"
 	},
 	"require-dev": {
-		"phpunit/phpunit": "~9.5.0",
 		"league/flysystem-aws-s3-v3": "^3.0",
-		"league/flysystem-ftp": "^3.0"
+		"league/flysystem-ftp": "^3.0",
+		"league/flysystem-sftp-v3": "^3.0",
+		"phpunit/phpunit": "~9.5.0"
 	},
 	"autoload": {
 		"psr-4": {

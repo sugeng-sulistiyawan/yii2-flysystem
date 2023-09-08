@@ -2,6 +2,8 @@
 
 namespace diecoding\flysystem;
 
+use DateTimeImmutable;
+use DateTimeInterface;
 use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\PathNormalizer;
@@ -33,6 +35,9 @@ use yii\base\Component;
  * @method string temporaryUrl(string $path, \DateTimeInterface $expiresAt, array $config = [])
  * @method string checksum(string $path, array $config = [])
  * 
+ * @method string encrypt(string $string)
+ * @method string decrypt(string $string)
+ * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
@@ -48,6 +53,11 @@ abstract class AbstractComponent extends Component
      * @var string 
      */
     public $prefix;
+
+    /** 
+     * @var string 
+     */
+    public $directorySeparator = '/';
 
     /**
      * @var Filesystem
@@ -96,14 +106,18 @@ abstract class AbstractComponent extends Component
     }
 
     /**
-     * Convert Time To \DateTimeInterface
+     * Convert Time To DateTimeImmutable
      *
-     * @param string $dateValue
-     * @return \DateTimeInterface
+     * @param int|string|DateTimeInterface $dateValue
+     * @return DateTimeImmutable
      */
     public function convertToDateTime($dateValue)
     {
-        return new \DateTimeImmutable($dateValue);
+        if ($dateValue instanceof DateTimeInterface) {
+            return DateTimeImmutable::createFromInterface($dateValue);
+        }
+
+        return new DateTimeImmutable($dateValue);
     }
 
     /**

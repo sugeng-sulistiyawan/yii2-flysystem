@@ -3,7 +3,6 @@
 namespace diecoding\flysystem\actions;
 
 use DateTimeImmutable;
-use diecoding\flysystem\LocalComponent;
 use Yii;
 use yii\base\Action;
 use yii\helpers\Json;
@@ -41,7 +40,7 @@ class FileAction extends Action
     public $component = 'fs';
 
     /**
-     * @var mixed|LocalComponent
+     * @var \diecoding\flysystem\AbstractComponent|mixed
      */
     protected $filesystem;
 
@@ -69,7 +68,7 @@ class FileAction extends Action
             $expires = (int) $params['expires'];
             // $config  = (array) $params['config'];
 
-            if (!$this->filesystem->fileExists($params['path']) || $expires <= 0 || $expires < $now) {
+            if (!$this->filesystem->fileExists($params['path']) || ($expires > 0 && $expires < $now)) {
                 throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
             }
 

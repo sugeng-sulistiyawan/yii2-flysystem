@@ -6,6 +6,7 @@ use diecoding\flysystem\traits\UrlGeneratorTrait;
 use League\Flysystem\Local\LocalFilesystemAdapter;
 use Yii;
 use yii\base\InvalidConfigException;
+use yii\helpers\FileHelper;
 
 /**
  * Class LocalComponent
@@ -15,7 +16,6 @@ use yii\base\InvalidConfigException;
  *     'fs' => [
  *         'class' => \diecoding\flysystem\LocalComponent::class,
  *         'path' => dirname(dirname(__DIR__)) . '/storage', // or you can use @alias
- *         'key' => 'my-key',
  *         'secret' => 'my-secret', 
  *         'action' => '/site/file',
  *         'prefix' => '',
@@ -44,11 +44,6 @@ class LocalComponent extends AbstractComponent
     /**
      * @var string
      */
-    public $key;
-
-    /**
-     * @var string
-     */
     protected $_location;
 
     /**
@@ -62,11 +57,8 @@ class LocalComponent extends AbstractComponent
         if (empty($this->secret)) {
             throw new InvalidConfigException('The "secret" property must be set.');
         }
-        if (empty($this->key)) {
-            throw new InvalidConfigException('The "key" property must be set.');
-        }
 
-        $this->initEncrypter($this->secret, $this->key);
+        $this->initEncrypter($this->secret);
 
         parent::init();
     }
@@ -77,7 +69,7 @@ class LocalComponent extends AbstractComponent
     protected function initAdapter()
     {
         $this->path      = (string) Yii::getAlias($this->path);
-        $this->_location = $this->normalizePath($this->path . '/' . $this->prefix);
+        $this->_location = FileHelper::normalizePath($this->path . '/' . $this->prefix, $this->directorySeparator);
 
         return new LocalFilesystemAdapter($this->_location);
     }
