@@ -3,14 +3,21 @@
 namespace diecoding\flysystem;
 
 use diecoding\flysystem\traits\UrlGeneratorTrait;
+use League\Flysystem\ChecksumAlgoIsNotSupported;
+use League\Flysystem\ChecksumProvider;
+use League\Flysystem\Config;
 use League\Flysystem\Ftp\FtpAdapter;
 use League\Flysystem\Ftp\FtpConnectionOptions;
 use League\Flysystem\PathPrefixing\PathPrefixedAdapter;
+use League\Flysystem\UrlGeneration\PublicUrlGenerator;
+use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
 use Yii;
-use yii\base\InvalidConfigException;
 
 /**
  * Interacting with an ftp filesystem
+ * ! Notice
+ * It's important to know this adapter does not fully comply with the adapter contract. The difference(s) is/are:
+ * - Checksum setting or retrieving is not supported.
  * @see https://flysystem.thephpleague.com/docs/adapter/ftp/
  * 
  * ```php
@@ -42,7 +49,7 @@ use yii\base\InvalidConfigException;
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
  */
-class FtpComponent extends AbstractComponent
+class FtpComponent extends AbstractComponent implements PublicUrlGenerator, TemporaryUrlGenerator, ChecksumProvider
 {
     use UrlGeneratorTrait;
 
@@ -69,67 +76,67 @@ class FtpComponent extends AbstractComponent
     /**
      * @var int
      */
-    public $port = 21;
+    public $port;
 
     /**
      * @var bool
      */
-    public $ssl = false;
+    public $ssl;
 
     /**
      * @var int
      */
-    public $timeout = 90;
+    public $timeout;
 
     /**
      * @var bool
      */
-    public $utf8 = false;
+    public $utf8;
 
     /**
      * @var bool
      */
-    public $passive = true;
+    public $passive;
 
     /**
      * @var int
      */
-    public $transferMode = FTP_BINARY;
+    public $transferMode;
 
     /**
-     * @var string|null `windows` or `unix`
+     * @var string `windows` or `unix`
      */
-    public $systemType = null;
-
-    /**
-     * @var bool|null
-     */
-    public $ignorePassiveAddress = null;
+    public $systemType;
 
     /**
      * @var bool
      */
-    public $timestampsOnUnixListingsEnabled = false;
+    public $ignorePassiveAddress;
 
     /**
      * @var bool
      */
-    public $recurseManually = true;
+    public $timestampsOnUnixListingsEnabled;
 
     /**
-     * @var bool|null
+     * @var bool
      */
-    public $useRawListOptions = null;
+    public $recurseManually;
 
     /**
-     * @var string|null
+     * @var bool
      */
-    public $passphrase = null;
+    public $useRawListOptions;
+
+    /**
+     * @var string
+     */
+    public $passphrase;
 
     /**
      * @var array
      */
-    protected $_properties = [
+    protected $_availableOptions = [
         'host',
         'root',
         'username',
@@ -171,8 +178,10 @@ class FtpComponent extends AbstractComponent
         $this->root = (string) Yii::getAlias($this->root);
 
         $options = [];
-        foreach ($this->_properties as $property) {
-            $options[$property] = $this->$property;
+        foreach ($this->_availableOptions as $property) {
+            if ($this->$property !== null) {
+                $options[$property] = $this->$property;
+            }
         }
 
         $this->_connectionOptions = FtpConnectionOptions::fromArray($options);
@@ -183,5 +192,14 @@ class FtpComponent extends AbstractComponent
         }
 
         return $adapter;
+    }
+
+    public function checksum(string $path, Config $config): string
+    {
+        if ($this->debug) {
+            throw new ChecksumAlgoIsNotSupported('FtpComponent does not support this operation.');
+        }
+
+        return '';
     }
 }

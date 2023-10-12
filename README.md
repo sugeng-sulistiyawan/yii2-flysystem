@@ -28,6 +28,7 @@ This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integr
     - [AWS S3 Filesystem](#aws-s3-filesystem)
     - [FTP Filesystem](#ftp-filesystem)
     - [SFTP Filesystem](#sftp-filesystem)
+    - [WebDAV Filesystem](#webdav-filesystem)
   - [Additional Configuration](#additional-configuration)
     - [URL File Action Settings](#url-file-action-settings)
     - [Global Visibility Settings](#global-visibility-settings)
@@ -85,6 +86,7 @@ or add to the require section of your `composer.json` file.
 - [league/flysystem-aws-s3-v3](https://github.com/thephpleague/flysystem-aws-s3-v3)
 - [league/flysystem-ftp](https://github.com/thephpleague/flysystem-ftp)
 - [league/flysystem-sftp-v3](https://github.com/thephpleague/flysystem-sftp-v3)
+- [league/flysystem-webdav](https://github.com/thephpleague/flysystem-webdav)
 
 ## Configuration
 
@@ -270,6 +272,41 @@ return [
             'root' => '/root/path/', // or you can use @alias
             'action' => '/site/file',
             'prefix' => '', 
+        ],
+    ],
+];
+```
+
+### WebDAV Filesystem
+
+Either run
+
+```shell
+composer require league/flysystem-webdav:^3.0
+```
+
+or add
+
+```shell
+"league/flysystem-webdav": "^3.0"
+```
+
+to the `require` section of your `composer.json` file and configure application `components` as follows
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'fs' => [
+            'class'    => \diecoding\flysystem\WebDavComponent::class,
+            'baseUri'  => 'http://your-webdav-server.org/',
+            'userName' => 'your_user',
+            'password' => 'superSecret1234',
+            'prefix'   => '',
+            // 'proxy'    => '',
+            // 'authType' => \Sabre\DAV\Client::AUTH_BASIC,
+            // 'encoding' => \Sabre\DAV\Client::ENCODING_IDENTITY,
         ],
     ],
 ];

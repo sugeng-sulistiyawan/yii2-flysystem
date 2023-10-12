@@ -87,14 +87,20 @@ class AwsS3Component extends AbstractComponent
     public $credentials = [];
 
     /**
-     * @var bool
-     */
-    public $debug = false;
-
-    /**
      * @var S3Client
      */
     protected $client;
+
+    /**
+     * @var array
+     */
+    protected $_availableOptions = [
+        'endpoint' => 'endpoint',
+        'use_path_style_endpoint' => 'usePathStyleEndpoint',
+        'region' => 'region',
+        'version' => 'version',
+        'debug' => 'debug',
+    ];
 
     /**
      * @inheritdoc
@@ -130,11 +136,11 @@ class AwsS3Component extends AbstractComponent
             $config['credentials'] = $this->credentials;
         }
 
-        $config['endpoint'] = $this->endpoint;
-        $config['use_path_style_endpoint'] = $this->usePathStyleEndpoint;
-        $config['region'] = $this->region;
-        $config['version'] = $this->version;
-        $config['debug'] = $this->debug;
+        foreach ($this->_availableOptions as $key => $property) {
+            if ($this->$property !== null) {
+                $config[$key] = $this->$property;
+            }
+        }
 
         /**
          * {@see S3Client::__construct}, S3Client accepts the following

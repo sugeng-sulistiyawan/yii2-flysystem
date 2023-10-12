@@ -46,12 +46,7 @@ class AsyncAwsS3Component extends AbstractComponent
     /**
      * @var string
      */
-    public $region = Configuration::DEFAULT_REGION;
-
-    /**
-     * @var bool
-     */
-    public $debug = false;
+    public $region;
 
     /**
      * @var string
@@ -81,22 +76,38 @@ class AsyncAwsS3Component extends AbstractComponent
     /**
      * @var bool
      */
-    public $endpointDiscoveryEnabled = false;
+    public $endpointDiscoveryEnabled;
 
     /**
      * @var bool
      */
-    public $pathStyleEndpoint = false;
+    public $pathStyleEndpoint;
 
     /**
      * @var bool
      */
-    public $sendChunkedBody = false;
+    public $sendChunkedBody;
 
     /**
      * @var S3Client
      */
     protected $client;
+
+    /**
+     * @var array
+     */
+    protected $_availableOptions = [
+        'region' => false,
+        'debug' => true,
+        'accessKeyId' => false,
+        'accessKeySecret' => false,
+        'sharedCredentialsFile' => false,
+        'sharedConfigFile' => false,
+        'endpoint' => false,
+        'endpointDiscoveryEnabled' => true,
+        'pathStyleEndpoint' => true,
+        'sendChunkedBody' => true,
+    ];
 
     /**
      * @inheritdoc
@@ -121,16 +132,12 @@ class AsyncAwsS3Component extends AbstractComponent
      */
     protected function initAdapter()
     {
-        $config['region'] = $this->region;
-        $config['debug'] = var_export($this->debug, true);
-        $config['accessKeyId'] = $this->accessKeyId;
-        $config['accessKeySecret'] = $this->accessKeySecret;
-        $config['sharedCredentialsFile'] = $this->sharedCredentialsFile;
-        $config['sharedConfigFile'] = $this->sharedConfigFile;
-        $config['endpoint'] = $this->endpoint;
-        $config['endpointDiscoveryEnabled'] = var_export($this->endpointDiscoveryEnabled, true);
-        $config['pathStyleEndpoint'] = var_export($this->pathStyleEndpoint, true);
-        $config['sendChunkedBody'] = var_export($this->sendChunkedBody, true);
+        $config = [];
+        foreach ($this->_availableOptions as $property => $export) {
+            if ($this->$property !== null) {
+                $config[$property] = $export ? var_export($this->$property, true) : $this->$property;
+            }
+        }
 
         $this->client = new S3Client($config);
 

@@ -3,16 +3,23 @@
 namespace diecoding\flysystem;
 
 use diecoding\flysystem\traits\UrlGeneratorTrait;
+use League\Flysystem\ChecksumAlgoIsNotSupported;
+use League\Flysystem\ChecksumProvider;
+use League\Flysystem\Config;
 use League\Flysystem\PathPrefixing\PathPrefixedAdapter;
 use League\Flysystem\PhpseclibV3\SftpAdapter;
 use League\Flysystem\PhpseclibV3\SftpConnectionProvider;
+use League\Flysystem\UrlGeneration\PublicUrlGenerator;
+use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\FileHelper;
 
 /**
  * Interacting with an sftp filesystem
  * This implementation uses version 3 of phpseclib
+ * ! Notice
+ * It's important to know this adapter does not fully comply with the adapter contract. The difference(s) is/are:
+ * - Checksum setting or retrieving is not supported.
  * @see https://flysystem.thephpleague.com/docs/adapter/sftp-v3/
  * 
  * ```php
@@ -42,7 +49,7 @@ use yii\helpers\FileHelper;
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
  */
-class SftpComponent extends AbstractComponent
+class SftpComponent extends AbstractComponent implements PublicUrlGenerator, TemporaryUrlGenerator, ChecksumProvider
 {
     use UrlGeneratorTrait;
 
@@ -57,53 +64,53 @@ class SftpComponent extends AbstractComponent
     public $username;
 
     /**
-     * @var string|null
+     * @var string
      */
-    public $password = null;
+    public $password;
 
     /**
-     * @var string|null
+     * @var string
      */
-    public $privateKey = null;
+    public $privateKey;
 
     /**
-     * @var string|null
+     * @var string
      */
-    public $passphrase = null;
+    public $passphrase;
 
     /**
      * @var int
      */
-    public $port = 22;
+    public $port;
 
     /**
      * @var bool
      */
-    public $useAgent = false;
+    public $useAgent;
 
     /**
      * @var int
      */
-    public $timeout = 10;
+    public $timeout;
     /**
      * @var int
      */
-    public $maxTries = 4;
+    public $maxTries;
 
     /**
-     * @var string|null
+     * @var string
      */
-    public $hostFingerprint = null;
+    public $hostFingerprint;
 
     /**
-     * @var \League\Flysystem\PhpseclibV3\ConnectivityChecker|null
+     * @var \League\Flysystem\PhpseclibV3\ConnectivityChecker
      */
-    public $connectivityChecker = null;
+    public $connectivityChecker;
 
     /**
      * @var array
      */
-    public $preferredAlgorithms = [];
+    public $preferredAlgorithms;
 
     /**
      * @var string
@@ -113,7 +120,7 @@ class SftpComponent extends AbstractComponent
     /**
      * @var array
      */
-    protected $_properties = [
+    protected $_availableOptions = [
         'host',
         'username',
         'password',
@@ -138,6 +145,13 @@ class SftpComponent extends AbstractComponent
      */
     public function init()
     {
+        if (empty($this->path)) {
+            throw new InvalidConfigException('The "host" property must be set.');
+        }
+        if (empty($this->secret)) {
+            throw new InvalidConfigException('The "username" property must be set.');
+        }
+
         $this->passphrase = $this->passphrase ?: ($this->password ?: ($this->username ?: Yii::$app->id));
         $this->initEncrypter($this->passphrase);
 
@@ -152,8 +166,10 @@ class SftpComponent extends AbstractComponent
         $this->root = (string) Yii::getAlias($this->root);
 
         $options = [];
-        foreach ($this->_properties as $property) {
-            $options[$property] = $this->$property;
+        foreach ($this->_availableOptions as $property) {
+            if ($this->$property !== null) {
+                $options[$property] = $this->$property;
+            }
         }
 
         $this->_connectionProvider = SftpConnectionProvider::fromArray($options);
@@ -164,5 +180,14 @@ class SftpComponent extends AbstractComponent
         }
 
         return $adapter;
+    }
+
+    public function checksum(string $path, Config $config): string
+    {
+        if ($this->debug) {
+            throw new ChecksumAlgoIsNotSupported('SftpComponent does not support this operation.');
+        }
+
+        return '';
     }
 }
