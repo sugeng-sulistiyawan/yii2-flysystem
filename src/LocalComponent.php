@@ -19,9 +19,9 @@ use yii\base\InvalidConfigException;
  *     'fs' => [
  *         'class' => \diecoding\flysystem\LocalComponent::class,
  *         'path' => dirname(dirname(__DIR__)) . '/storage', // or you can use @alias
- *         'secret' => 'my-secret', 
- *         'action' => '/site/file',
- *         'prefix' => '',
+ *         'secret' => 'my-secret', // for secure route url
+ *         // 'action' => '/site/file', // action route
+ *         // 'prefix' => '',
  *     ],
  * ],
  * ```

@@ -102,11 +102,11 @@ return [
     'components' => [
         // ...
         'fs' => [
-            'class'  => \diecoding\flysystem\LocalComponent::class,
-            'path'   => dirname(dirname(__DIR__)) . '/storage', // or you can use @alias
-            'secret' => 'my-secret',
-            'action' => '/site/file', // action for get url file
-            'prefix' => '',
+            'class' => \diecoding\flysystem\LocalComponent::class,
+            'path' => dirname(dirname(__DIR__)) . '/storage', // or you can use @alias
+            'secret' => 'my-secret', // for secure route url
+            // 'action' => '/site/file', // action route
+            // 'prefix' => '',
         ],
     ],
 ];
@@ -134,19 +134,19 @@ return [
     'components' => [
         // ...
         'fs' => [
-            'class'           => \diecoding\flysystem\AsyncAwsS3Component::class,
-            'endpoint'        => 'my-endpoint',
-            'bucket'          => 'my-bucket',
-            'accessKeyId'     => 'my-key',
+            'class' => \diecoding\flysystem\AsyncAwsS3Component::class,
+            'endpoint' => 'http://your-endpoint',
+            'bucket' => 'my-bucket',
+            'accessKeyId' => 'my-key',
             'accessKeySecret' => 'my-secret',
-            'prefix'          => '',
-            // 'sharedCredentialsFile'    => '~/.aws/credentials',
-            // 'sharedConfigFile'         => '~/.aws/config',
-            // 'region'                   => 'us-east-1',
-            // 'debug'                    => false,
+            // 'sharedCredentialsFile' => '~/.aws/credentials',
+            // 'sharedConfigFile' => '~/.aws/config',
+            // 'region' => 'us-east-1',
             // 'endpointDiscoveryEnabled' => false,
-            // 'pathStyleEndpoint'        => false,
-            // 'sendChunkedBody'          => false,
+            // 'pathStyleEndpoint' => false,
+            // 'sendChunkedBody' => false,
+            // 'debug' => false,
+            // 'prefix' => '',
         ],
     ],
 ];
@@ -174,19 +174,19 @@ return [
     'components' => [
         // ...
         'fs' => [
-            'class'    => \diecoding\flysystem\AwsS3Component::class,
-            'endpoint' => 'http://your-endpoint'
-            'key'      => 'your-key',
-            'secret'   => 'your-secret',
-            'bucket'   => 'your-bucket',
-            'prefix'   => '',
-            // 'region'               => 'us-east-1'
-            // 'version'              => 'latest',
+            'class' => \diecoding\flysystem\AwsS3Component::class,
+            'endpoint' => 'http://your-endpoint',
+            'key' => 'your-key',
+            'secret' => 'your-secret',
+            'bucket' => 'your-bucket',
+            // 'region' => 'us-east-1'
+            // 'version' => 'latest',
             // 'usePathStyleEndpoint' => false,
-            // 'streamReads'          => false,
-            // 'options'              => [],
-            // 'credentials'          => [],
-            // 'debug'                => false,
+            // 'streamReads' => false,
+            // 'options' => [],
+            // 'credentials' => [],
+            // 'debug' => false,
+            // 'prefix' => '',
         ],
     ],
 ];
@@ -214,24 +214,25 @@ return [
     'components' => [
         // ...
         'fs' => [
-            'class'    => \diecoding\flysystem\FtpComponent::class,
-            'host'     => 'hostname',
-            'root'     => '/root/path/', // or you can use @alias
+            'class' => \diecoding\flysystem\FtpComponent::class,
+            'host' => 'hostname',
+            'root' => '/root/path/', // or you can use @alias
             'username' => 'username',
             'password' => 'password',
-            // 'port'                            => 21,
-            // 'ssl'                             => false,
-            // 'timeout'                         => 90,
-            // 'utf8'                            => false,
-            // 'passive'                         => true,
-            // 'transferMode'                    => FTP_BINARY,
-            // 'systemType'                      => null,         // 'windows' or 'unix'
-            // 'ignorePassiveAddress'            => null,         // true or false
+            // 'port' => 21,
+            // 'ssl' => false,
+            // 'timeout' => 90,
+            // 'utf8' => false,
+            // 'passive' => true,
+            // 'transferMode' => FTP_BINARY,
+            // 'systemType' => null, // 'windows' or 'unix'
+            // 'ignorePassiveAddress' => null, // true or false
             // 'timestampsOnUnixListingsEnabled' => false,
-            // 'recurseManually'                 => true,
-            // 'useRawListOptions'               => null,         // true or false
-            'action' => '/site/file', // action for get url file
-            'prefix' => '',
+            // 'recurseManually' => true,
+            // 'useRawListOptions' => null, // true or false
+            // 'passphrase' => 'secret', // for secure route url
+            // 'action' => '/site/file', // action route
+            // 'prefix' => '',
         ],
     ],
 ];
@@ -261,8 +262,8 @@ return [
             'class' => \diecoding\flysystem\SftpComponent::class,
             'host' => 'hostname',
             'username' => 'username',
-            // 'password' => null, // password (optional, default: null) set to null if privateKey is used
-            'privateKey' => '/path/to/my/private_key', // private key (optional, default: null) can be used instead of password, set to null if password is set
+            'password' => null, // password (optional, default: null) set to null if privateKey is used
+            // 'privateKey' => '/path/to/my/private_key', // private key (optional, default: null) can be used instead of password, set to null if password is set
             // 'passphrase' => 'super-secret-password', // passphrase (optional, default: null), set to null if privateKey is not used or has no passphrase
             // 'port' => 22,
             // 'useAgent' => true,
@@ -271,9 +272,9 @@ return [
             // 'hostFingerprint' => null,
             // 'connectivityChecker' => null, // connectivity checker (must be an implementation of `League\Flysystem\PhpseclibV2\ConnectivityChecker` to check if a connection can be established (optional, omit if you don't need some special handling for setting reliable connections)
             // 'preferredAlgorithms' => [],
-            'root' => '/root/path/', // or you can use @alias
-            'action' => '/site/file',
-            'prefix' => '', 
+            // 'root' => '/root/path/', // or you can use @alias
+            // 'action' => '/site/file', // action route
+            // 'prefix' => '',
         ],
     ],
 ];
@@ -301,14 +302,14 @@ return [
     'components' => [
         // ...
         'fs' => [
-            'class'    => \diecoding\flysystem\WebDavComponent::class,
-            'baseUri'  => 'http://your-webdav-server.org/',
+            'class' => \diecoding\flysystem\WebDavComponent::class,
+            'baseUri' => 'http://your-webdav-server.org/',
             'userName' => 'your_user',
             'password' => 'superSecret1234',
-            'prefix'   => '',
-            // 'proxy'    => '',
+            // 'proxy' => '',
             // 'authType' => \Sabre\DAV\Client::AUTH_BASIC,
             // 'encoding' => \Sabre\DAV\Client::ENCODING_IDENTITY,
+            // 'prefix' => '',
         ],
     ],
 ];
@@ -338,7 +339,9 @@ return [
         'fs' => [
             'class' => \diecoding\flysystem\ZipArchiveComponent::class,
             'pathToZip' => dirname(dirname(__DIR__)) . '/storage.zip', // or you can use @alias
-            'prefix' => '', // root directory inside zip file
+            'secret' => 'my-secret', // for secure route url
+            // 'action' => '/site/file', // action route
+            // 'prefix' => '', // root directory inside zip file
         ],
     ],
 ];

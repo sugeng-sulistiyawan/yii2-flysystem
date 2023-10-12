@@ -2,6 +2,7 @@
 
 namespace diecoding\flysystem;
 
+use diecoding\flysystem\traits\UrlGeneratorTrait;
 use League\Flysystem\ChecksumAlgoIsNotSupported;
 use League\Flysystem\ChecksumProvider;
 use League\Flysystem\Config;
@@ -19,8 +20,6 @@ use yii\base\InvalidConfigException;
  * ! Notice
  * It's important to know this adapter does not fully comply with the adapter contract. The difference(s) is/are:
  * - Checksum setting or retrieving is not supported.
- * - PublicUrl setting or retrieving is not supported.
- * - TemporaryUrl setting or retrieving is not supported.
  * @see https://flysystem.thephpleague.com/docs/adapter/zip-archive/
  * 
  * ```php
@@ -28,7 +27,9 @@ use yii\base\InvalidConfigException;
  *     'fs' => [
  *         'class' => \diecoding\flysystem\ZipArchiveComponent::class,
  *         'pathToZip' => dirname(dirname(__DIR__)) . '/storage.zip', // or you can use @alias
- *         'prefix' => '', // root directory inside zip file
+ *         'secret' => 'my-secret', // for secure route url
+ *         // 'action' => '/site/file', // action route
+ *         // 'prefix' => '', // root directory inside zip file
  *     ],
  * ],
  * ```
@@ -39,6 +40,8 @@ use yii\base\InvalidConfigException;
  */
 class ZipArchiveComponent extends AbstractComponent implements PublicUrlGenerator, TemporaryUrlGenerator, ChecksumProvider
 {
+    use UrlGeneratorTrait;
+
     /**
      * @var string
      */
@@ -52,6 +55,11 @@ class ZipArchiveComponent extends AbstractComponent implements PublicUrlGenerato
         if (empty($this->pathToZip)) {
             throw new InvalidConfigException('The "pathToZip" property must be set.');
         }
+        if (empty($this->secret)) {
+            throw new InvalidConfigException('The "secret" property must be set.');
+        }
+
+        $this->initEncrypter($this->secret);
 
         parent::init();
     }
@@ -65,26 +73,8 @@ class ZipArchiveComponent extends AbstractComponent implements PublicUrlGenerato
 
         return new ZipArchiveAdapter(
             new FilesystemZipArchiveProvider($this->pathToZip),
-            $this->prefix
+            (string) $this->prefix
         );
-    }
-
-    public function publicUrl(string $path, Config $config): string
-    {
-        if ($this->debug) {
-            throw new UnableToGeneratePublicUrl('ZipArchiveComponent does not support this operation.', $path);
-        }
-
-        return '';
-    }
-
-    public function temporaryUrl(string $path, \DateTimeInterface $expiresAt, Config $config): string
-    {
-        if ($this->debug) {
-            throw new UnableToGenerateTemporaryUrl('ZipArchiveComponent does not support this operation.', $path);
-        }
-
-        return '';
     }
 
     public function checksum(string $path, Config $config): string

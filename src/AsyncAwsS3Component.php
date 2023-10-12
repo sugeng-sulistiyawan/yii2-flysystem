@@ -15,19 +15,19 @@ use yii\base\InvalidConfigException;
  * ```php
  * 'components' => [
  *     'fs' => [
- *         'class'           => \diecoding\flysystem\AsyncAwsS3Component::class,
- *         'endpoint'        => 'http://your-endpoint',
- *         'bucket'          => 'my-bucket',
- *         'accessKeyId'     => 'my-key',
+ *         'class' => \diecoding\flysystem\AsyncAwsS3Component::class,
+ *         'endpoint' => 'http://your-endpoint',
+ *         'bucket' => 'my-bucket',
+ *         'accessKeyId' => 'my-key',
  *         'accessKeySecret' => 'my-secret',
- *         'prefix'          => '',
- *         // 'sharedCredentialsFile'    => '~/.aws/credentials',
- *         // 'sharedConfigFile'         => '~/.aws/config',
- *         // 'region'                   => 'us-east-1',
- *         // 'debug'                    => false,
+ *         // 'sharedCredentialsFile' => '~/.aws/credentials',
+ *         // 'sharedConfigFile' => '~/.aws/config',
+ *         // 'region' => 'us-east-1',
  *         // 'endpointDiscoveryEnabled' => false,
- *         // 'pathStyleEndpoint'        => false,
- *         // 'sendChunkedBody'          => false,
+ *         // 'pathStyleEndpoint' => false,
+ *         // 'sendChunkedBody' => false,
+ *         // 'debug' => false,
+ *         // 'prefix' => '',
  *     ],
  * ],
  * ```
@@ -141,6 +141,6 @@ class AsyncAwsS3Component extends AbstractComponent
 
         $this->client = new S3Client($config);
 
-        return new AsyncAwsS3Adapter($this->client, $this->bucket, $this->prefix);
+        return new AsyncAwsS3Adapter($this->client, $this->bucket, (string) $this->prefix);
     }
 }

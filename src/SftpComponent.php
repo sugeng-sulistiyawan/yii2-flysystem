@@ -29,18 +29,18 @@ use yii\base\InvalidConfigException;
  *         'host' => 'hostname',
  *         'username' => 'username',
  *         'password' => null, // password (optional, default: null) set to null if privateKey is used
- *         'privateKey' => '/path/to/my/private_key', // private key (optional, default: null) can be used instead of password, set to null if password is set
- *         'passphrase' => 'super-secret-password', // passphrase (optional, default: null), set to null if privateKey is not used or has no passphrase
- *         'port' => 22,
- *         'useAgent' => true,
- *         'timeout' => 10,
- *         'maxTries' => 4,
- *         'hostFingerprint' => null,
- *         'connectivityChecker' => null, // connectivity checker (must be an implementation of `League\Flysystem\PhpseclibV2\ConnectivityChecker` to check if a connection can be established (optional, omit if you don't need some special handling for setting reliable connections)
- *         'preferredAlgorithms' => [],
- *         'root' => '/root/path/', // or you can use @alias
- *         'action' => '/site/file',
- *         'prefix' => '', 
+ *         // 'privateKey' => '/path/to/my/private_key', // private key (optional, default: null) can be used instead of password, set to null if password is set
+ *         // 'passphrase' => 'super-secret-password', // passphrase (optional, default: null), set to null if privateKey is not used or has no passphrase
+ *         // 'port' => 22,
+ *         // 'useAgent' => true,
+ *         // 'timeout' => 10,
+ *         // 'maxTries' => 4,
+ *         // 'hostFingerprint' => null,
+ *         // 'connectivityChecker' => null, // connectivity checker (must be an implementation of `League\Flysystem\PhpseclibV2\ConnectivityChecker` to check if a connection can be established (optional, omit if you don't need some special handling for setting reliable connections)
+ *         // 'preferredAlgorithms' => [],
+ *         // 'root' => '/root/path/', // or you can use @alias
+ *         // 'action' => '/site/file', // action route
+ *         // 'prefix' => '',
  *     ],
  * ],
  * ```

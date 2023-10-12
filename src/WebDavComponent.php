@@ -26,10 +26,10 @@ use yii\base\InvalidConfigException;
  *         'baseUri' => 'http://your-webdav-server.org/',
  *         'userName' => 'your_user',
  *         'password' => 'superSecret1234',
- *         'prefix' => '',
  *         // 'proxy' => '',
  *         // 'authType' => \Sabre\DAV\Client::AUTH_BASIC,
  *         // 'encoding' => \Sabre\DAV\Client::ENCODING_IDENTITY,
+ *         // 'prefix' => '',
  *     ],
  * ],
  * ```
@@ -120,7 +120,7 @@ class WebDavComponent extends AbstractComponent implements TemporaryUrlGenerator
 
         $this->client = new Client($config);
 
-        return new WebDAVAdapter($this->client, $this->prefix, $this->debug ? WebDAVAdapter::ON_VISIBILITY_THROW_ERROR : WebDAVAdapter::ON_VISIBILITY_IGNORE);
+        return new WebDAVAdapter($this->client, (string) $this->prefix, $this->debug ? WebDAVAdapter::ON_VISIBILITY_THROW_ERROR : WebDAVAdapter::ON_VISIBILITY_IGNORE);
     }
 
     public function temporaryUrl(string $path, \DateTimeInterface $expiresAt, Config $config): string

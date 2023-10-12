@@ -13,19 +13,19 @@ use yii\base\InvalidConfigException;
  * ```php
  * 'components' => [
  *     'fs' => [
- *         'class'    => \diecoding\flysystem\AwsS3Component::class,
+ *         'class' => \diecoding\flysystem\AwsS3Component::class,
  *         'endpoint' => 'http://your-endpoint',
- *         'key'      => 'your-key',
- *         'secret'   => 'your-secret',
- *         'bucket'   => 'your-bucket',
- *         'prefix'   => '',
- *         // 'region'               => 'us-east-1'
- *         // 'version'              => 'latest',
+ *         'key' => 'your-key',
+ *         'secret' => 'your-secret',
+ *         'bucket' => 'your-bucket',
+ *         // 'region' => 'us-east-1'
+ *         // 'version' => 'latest',
  *         // 'usePathStyleEndpoint' => false,
- *         // 'streamReads'          => false,
- *         // 'options'              => [],
- *         // 'credentials'          => [],
- *         // 'debug'                => false,
+ *         // 'streamReads' => false,
+ *         // 'options' => [],
+ *         // 'credentials' => [],
+ *         // 'debug' => false,
+ *         // 'prefix' => '',
  *     ],
  * ],
  * ```
@@ -148,6 +148,6 @@ class AwsS3Component extends AbstractComponent
          */
         $this->client = new S3Client($config);
 
-        return new AwsS3V3Adapter($this->client, $this->bucket, $this->prefix, null, null, $this->options, $this->streamReads);
+        return new AwsS3V3Adapter($this->client, $this->bucket, (string) $this->prefix, null, null, $this->options, $this->streamReads);
     }
 }

@@ -28,19 +28,20 @@ use Yii;
  *         'root' => '/root/path/', // or you can use @alias
  *         'username' => 'username',
  *         'password' => 'password',
- *         'port' => 21,
- *         'ssl' => false,
- *         'timeout' => 90,
- *         'utf8' => false,
- *         'passive' => true,
- *         'transferMode' => FTP_BINARY,
- *         'systemType' => null, // 'windows' or 'unix'
- *         'ignorePassiveAddress' => null, // true or false
- *         'timestampsOnUnixListingsEnabled' => false,
- *         'recurseManually' => true,
- *         'useRawListOptions' => null, // true or false
- *         'action' => '/site/file',
- *         'prefix' => '', 
+ *         // 'port' => 21,
+ *         // 'ssl' => false,
+ *         // 'timeout' => 90,
+ *         // 'utf8' => false,
+ *         // 'passive' => true,
+ *         // 'transferMode' => FTP_BINARY,
+ *         // 'systemType' => null, // 'windows' or 'unix'
+ *         // 'ignorePassiveAddress' => null, // true or false
+ *         // 'timestampsOnUnixListingsEnabled' => false,
+ *         // 'recurseManually' => true,
+ *         // 'useRawListOptions' => null, // true or false
+ *         // 'passphrase' => 'secret', // for secure route url
+ *         // 'action' => '/site/file', // action route
+ *         // 'prefix' => '',
  *     ],
  * ],
  * ```
