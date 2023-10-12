@@ -9,7 +9,6 @@ use League\Flysystem\UnableToGeneratePublicUrl;
 use League\Flysystem\UnableToGenerateTemporaryUrl;
 use League\Flysystem\UrlGeneration\PublicUrlGenerator;
 use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
-use League\Flysystem\WebDAV\WebDAVAdapter;
 use League\Flysystem\ZipArchive\FilesystemZipArchiveProvider;
 use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use Yii;
@@ -58,7 +57,7 @@ class ZipArchiveComponent extends AbstractComponent implements PublicUrlGenerato
     }
 
     /**
-     * @return WebDAVAdapter
+     * @return ZipArchiveAdapter
      */
     protected function initAdapter()
     {
