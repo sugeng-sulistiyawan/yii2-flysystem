@@ -145,7 +145,7 @@ class SftpComponent extends AbstractComponent
     }
 
     /**
-     * @return SftpAdapter
+     * @return SftpAdapter|PathPrefixedAdapter
      */
     protected function initAdapter()
     {

@@ -13,12 +13,19 @@ use yii\base\InvalidConfigException;
  * ```php
  * 'components' => [
  *     'fs' => [
- *         'class' => \diecoding\flysystem\AwsS3Component::class,
- *         'endpoint' => 'my-endpoint',
- *         'key' => 'my-key',
- *         'secret' => 'my-secret',
- *         'bucket' => 'my-bucket',
- *         'prefix' => '',
+ *         'class'    => \diecoding\flysystem\AwsS3Component::class,
+ *         'endpoint' => 'http://your-endpoint',
+ *         'key'      => 'your-key',
+ *         'secret'   => 'your-secret',
+ *         'bucket'   => 'your-bucket',
+ *         'prefix'   => '',
+ *         // 'region'               => 'us-east-1'
+ *         // 'version'              => 'latest',
+ *         // 'usePathStyleEndpoint' => false,
+ *         // 'streamReads'          => false,
+ *         // 'options'              => [],
+ *         // 'credentials'          => [],
+ *         // 'debug'                => false,
  *     ],
  * ],
  * ```
@@ -80,6 +87,11 @@ class AwsS3Component extends AbstractComponent
     public $credentials = [];
 
     /**
+     * @var bool
+     */
+    public $debug = false;
+
+    /**
      * @var S3Client
      */
     protected $client;
@@ -109,22 +121,25 @@ class AwsS3Component extends AbstractComponent
      */
     protected function initAdapter()
     {
-        $config = [];
-
         if (empty($this->credentials)) {
             $config['credentials'] = [
-                'key'    => $this->key,
+                'key' => $this->key,
                 'secret' => $this->secret,
             ];
         } else {
             $config['credentials'] = $this->credentials;
         }
 
-        $config['endpoint']                = $this->endpoint;
+        $config['endpoint'] = $this->endpoint;
         $config['use_path_style_endpoint'] = $this->usePathStyleEndpoint;
-        $config['region']                  = $this->region;
-        $config['version']                 = $this->version;
+        $config['region'] = $this->region;
+        $config['version'] = $this->version;
+        $config['debug'] = $this->debug;
 
+        /**
+         * {@see S3Client::__construct}, S3Client accepts the following
+         * {@see Aws\AwsClient::__construct}, S3Client accepts the following
+         */
         $this->client = new S3Client($config);
 
         return new AwsS3V3Adapter($this->client, $this->bucket, $this->prefix, null, null, $this->options, $this->streamReads);

@@ -24,6 +24,7 @@ This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integr
   - [Dev. Dependencies](#dev-dependencies)
   - [Configuration](#configuration)
     - [Local Filesystem](#local-filesystem)
+    - [AsyncAws S3 Filesystem](#asyncaws-s3-filesystem)
     - [AWS S3 Filesystem](#aws-s3-filesystem)
     - [FTP Filesystem](#ftp-filesystem)
     - [SFTP Filesystem](#sftp-filesystem)
@@ -76,9 +77,11 @@ or add to the require section of your `composer.json` file.
 - PHP 8.0+
 - [yiisoft/yii2](https://github.com/yiisoft/yii2)
 - [league/flysystem](https://github.com/thephpleague/flysystem)
+- [league/flysystem-path-prefixing](https://github.com/thephpleague/flysystem-path-prefixing)
 
 ## Dev. Dependencies
 
+- [league/flysystem-async-aws-s3](https://github.com/thephpleague/flysystem-async-aws-s3)
 - [league/flysystem-aws-s3-v3](https://github.com/thephpleague/flysystem-aws-s3-v3)
 - [league/flysystem-ftp](https://github.com/thephpleague/flysystem-ftp)
 - [league/flysystem-sftp-v3](https://github.com/thephpleague/flysystem-sftp-v3)
@@ -100,6 +103,46 @@ return [
             'secret' => 'my-secret',
             'action' => '/site/file', // action for get url file
             'prefix' => '',
+        ],
+    ],
+];
+```
+
+### AsyncAws S3 Filesystem
+
+Either run
+
+```shell
+composer require league/flysystem-async-aws-s3:^3.0
+```
+
+or add
+
+```shell
+"league/flysystem-async-aws-s3": "^3.0"
+```
+
+to the `require` section of your `composer.json` file and configure application `components` as follows
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'fs' => [
+            'class'           => \diecoding\flysystem\AsyncAwsS3Component::class,
+            'endpoint'        => 'my-endpoint',
+            'bucket'          => 'my-bucket',
+            'accessKeyId'     => 'my-key',
+            'accessKeySecret' => 'my-secret',
+            'prefix'          => '',
+            // 'sharedCredentialsFile'    => '~/.aws/credentials',
+            // 'sharedConfigFile'         => '~/.aws/config',
+            // 'region'                   => 'us-east-1',
+            // 'debug'                    => false,
+            // 'endpointDiscoveryEnabled' => false,
+            // 'pathStyleEndpoint'        => false,
+            // 'sendChunkedBody'          => false,
         ],
     ],
 ];
@@ -139,6 +182,7 @@ return [
             // 'streamReads'          => false,
             // 'options'              => [],
             // 'credentials'          => [],
+            // 'debug'                => false,
         ],
     ],
 ];

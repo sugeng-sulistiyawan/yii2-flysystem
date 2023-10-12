@@ -79,7 +79,7 @@ abstract class AbstractComponent extends Component
      */
     public function init()
     {
-        $adapter          = $this->initAdapter();
+        $adapter = $this->initAdapter();
         $this->filesystem = new Filesystem($adapter, $this->config);
     }
 
