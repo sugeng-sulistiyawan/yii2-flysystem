@@ -127,7 +127,9 @@ class AwsS3Component extends AbstractComponent
      */
     protected function initAdapter()
     {
-        $config['credentials'] = $this->credentials;
+        $config = [
+            'credentials' => $this->credentials,
+        ];
 
         if (empty($config['credentials'])) {
             $config['credentials'] = [
