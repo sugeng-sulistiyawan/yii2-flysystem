@@ -3,6 +3,7 @@
 namespace diecoding\flysystem\traits;
 
 use DateTimeInterface;
+use League\Flysystem\Config;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
@@ -24,7 +25,7 @@ trait UrlGeneratorTrait
      */
     public $action = '/site/file';
 
-    public function publicUrl(string $path, array $config = []): string
+    public function publicUrl(string $path, Config $config): string
     {
         $params = [
             'path'    => $this->normalizePath($path),
@@ -35,7 +36,7 @@ trait UrlGeneratorTrait
         return Url::toRoute([$this->action, 'data' => $this->encrypt(Json::encode($params))], true);
     }
 
-    public function temporaryUrl(string $path, DateTimeInterface $expiresAt, array $config = []): string
+    public function temporaryUrl(string $path, DateTimeInterface $expiresAt, Config $config): string
     {
         $params = [
             'path'    => $this->normalizePath($path),

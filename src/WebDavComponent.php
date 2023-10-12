@@ -2,6 +2,7 @@
 
 namespace diecoding\flysystem;
 
+use DateTimeInterface;
 use League\Flysystem\ChecksumAlgoIsNotSupported;
 use League\Flysystem\ChecksumProvider;
 use League\Flysystem\Config;
@@ -123,7 +124,7 @@ class WebDavComponent extends AbstractComponent implements TemporaryUrlGenerator
         return new WebDAVAdapter($this->client, (string) $this->prefix, $this->debug ? WebDAVAdapter::ON_VISIBILITY_THROW_ERROR : WebDAVAdapter::ON_VISIBILITY_IGNORE);
     }
 
-    public function temporaryUrl(string $path, \DateTimeInterface $expiresAt, Config $config): string
+    public function temporaryUrl(string $path, DateTimeInterface $expiresAt, Config $config): string
     {
         return $this->publicUrl($path, $config);
     }
