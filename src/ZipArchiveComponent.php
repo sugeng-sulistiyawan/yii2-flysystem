@@ -48,6 +48,11 @@ class ZipArchiveComponent extends AbstractComponent implements PublicUrlGenerato
     public $pathToZip;
 
     /**
+     * @var string
+     */
+    public $secret;
+
+    /**
      * @inheritdoc
      */
     public function init()
