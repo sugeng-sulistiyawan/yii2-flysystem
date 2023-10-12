@@ -11,7 +11,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * Interacting with the local filesystem
+ * Interacting with the Local filesystem
  * @see https://flysystem.thephpleague.com/docs/adapter/local/
  * 
  * ```php

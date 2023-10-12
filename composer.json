@@ -45,6 +45,7 @@
 		"league/flysystem-ftp": "^3.0",
 		"league/flysystem-sftp-v3": "^3.0",
 		"league/flysystem-webdav": "^3.0",
+		"league/flysystem-ziparchive": "^3.0",
 		"phpunit/phpunit": "~9.5.0"
 	},
 	"autoload": {

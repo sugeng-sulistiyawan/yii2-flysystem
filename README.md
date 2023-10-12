@@ -29,6 +29,7 @@ This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integr
     - [FTP Filesystem](#ftp-filesystem)
     - [SFTP Filesystem](#sftp-filesystem)
     - [WebDAV Filesystem](#webdav-filesystem)
+    - [ZipArchive Filesystem](#ziparchive-filesystem)
   - [Additional Configuration](#additional-configuration)
     - [URL File Action Settings](#url-file-action-settings)
     - [Global Visibility Settings](#global-visibility-settings)
@@ -87,6 +88,7 @@ or add to the require section of your `composer.json` file.
 - [league/flysystem-ftp](https://github.com/thephpleague/flysystem-ftp)
 - [league/flysystem-sftp-v3](https://github.com/thephpleague/flysystem-sftp-v3)
 - [league/flysystem-webdav](https://github.com/thephpleague/flysystem-webdav)
+- [league/flysystem-ziparchive](https://github.com/thephpleague/flysystem-ziparchive)
 
 ## Configuration
 
@@ -307,6 +309,36 @@ return [
             // 'proxy'    => '',
             // 'authType' => \Sabre\DAV\Client::AUTH_BASIC,
             // 'encoding' => \Sabre\DAV\Client::ENCODING_IDENTITY,
+        ],
+    ],
+];
+```
+
+### ZipArchive Filesystem
+
+Either run
+
+```shell
+composer require league/flysystem-ziparchive:^3.0
+```
+
+or add
+
+```shell
+"league/flysystem-ziparchive": "^3.0"
+```
+
+to the `require` section of your `composer.json` file and configure application `components` as follows
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'fs' => [
+            'class' => \diecoding\flysystem\ZipArchiveComponent::class,
+            'pathToZip' => dirname(dirname(__DIR__)) . '/storage.zip', // or you can use @alias
+            'prefix' => '', // root directory inside zip file
         ],
     ],
 ];

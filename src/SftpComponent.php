@@ -15,7 +15,7 @@ use Yii;
 use yii\base\InvalidConfigException;
 
 /**
- * Interacting with an sftp filesystem
+ * Interacting with an SFTP filesystem
  * This implementation uses version 3 of phpseclib
  * ! Notice
  * It's important to know this adapter does not fully comply with the adapter contract. The difference(s) is/are:

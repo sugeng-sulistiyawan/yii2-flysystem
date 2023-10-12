@@ -8,7 +8,7 @@ use League\Flysystem\AsyncAwsS3\AsyncAwsS3Adapter;
 use yii\base\InvalidConfigException;
 
 /**
- * Interacting with Aws S3 (Async)
+ * Interacting with Aws S3 (Async) filesystem
  * Read more about AsyncAws's S3Client in [their documentation](https://async-aws.com/clients/s3.html).
  * @see https://flysystem.thephpleague.com/docs/adapter/aws-s3-v3/
  * 

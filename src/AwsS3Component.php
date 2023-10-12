@@ -7,7 +7,7 @@ use League\Flysystem\AwsS3V3\AwsS3V3Adapter;
 use yii\base\InvalidConfigException;
 
 /**
- * Interacting with Aws S3
+ * Interacting with Aws S3 filesystem
  * @see https://flysystem.thephpleague.com/docs/adapter/aws-s3-v3/
  * 
  * ```php

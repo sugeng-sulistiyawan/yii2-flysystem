@@ -14,7 +14,7 @@ use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
 use Yii;
 
 /**
- * Interacting with an ftp filesystem
+ * Interacting with an FTP filesystem
  * ! Notice
  * It's important to know this adapter does not fully comply with the adapter contract. The difference(s) is/are:
  * - Checksum setting or retrieving is not supported.

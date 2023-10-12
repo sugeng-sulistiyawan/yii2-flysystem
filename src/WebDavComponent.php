@@ -11,7 +11,7 @@ use Sabre\DAV\Client;
 use yii\base\InvalidConfigException;
 
 /**
- * Interacting with an webdav filesystem
+ * Interacting with an WebDAV filesystem
  * ! Notice
  * It's important to know this adapter does not fully comply with the adapter contract. The difference(s) is/are:
  * - Visibility setting or retrieving is not supported.
