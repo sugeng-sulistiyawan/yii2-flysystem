@@ -120,7 +120,7 @@ class WebDavComponent extends AbstractComponent implements TemporaryUrlGenerator
 
         $this->client = new Client($config);
 
-        return new WebDAVAdapter($this->client, $this->bucket, $this->debug ? WebDAVAdapter::ON_VISIBILITY_THROW_ERROR : WebDAVAdapter::ON_VISIBILITY_IGNORE);
+        return new WebDAVAdapter($this->client, $this->prefix, $this->debug ? WebDAVAdapter::ON_VISIBILITY_THROW_ERROR : WebDAVAdapter::ON_VISIBILITY_IGNORE);
     }
 
     public function temporaryUrl(string $path, \DateTimeInterface $expiresAt, Config $config): string

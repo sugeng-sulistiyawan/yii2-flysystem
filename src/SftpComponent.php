@@ -145,10 +145,10 @@ class SftpComponent extends AbstractComponent implements PublicUrlGenerator, Tem
      */
     public function init()
     {
-        if (empty($this->path)) {
+        if (empty($this->host)) {
             throw new InvalidConfigException('The "host" property must be set.');
         }
-        if (empty($this->secret)) {
+        if (empty($this->username)) {
             throw new InvalidConfigException('The "username" property must be set.');
         }
 
