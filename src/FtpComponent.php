@@ -5,12 +5,13 @@ namespace diecoding\flysystem;
 use diecoding\flysystem\traits\UrlGeneratorTrait;
 use League\Flysystem\Ftp\FtpAdapter;
 use League\Flysystem\Ftp\FtpConnectionOptions;
+use League\Flysystem\PathPrefixing\PathPrefixedAdapter;
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\FileHelper;
 
 /**
- * Class FtpComponent
+ * Interacting with an ftp filesystem
+ * @see https://flysystem.thephpleague.com/docs/adapter/ftp/
  * 
  * ```php
  * 'components' => [
@@ -121,6 +122,32 @@ class FtpComponent extends AbstractComponent
     public $useRawListOptions = null;
 
     /**
+     * @var string|null
+     */
+    public $passphrase = null;
+
+    /**
+     * @var array
+     */
+    protected $_properties = [
+        'host',
+        'root',
+        'username',
+        'password',
+        'port',
+        'ssl',
+        'timeout',
+        'utf8',
+        'passive',
+        'transferMode',
+        'systemType',
+        'ignorePassiveAddress',
+        'timestampsOnUnixListingsEnabled',
+        'recurseManually',
+        'useRawListOptions',
+    ];
+
+    /**
      * @var FtpConnectionOptions
      */
     protected $_connectionOptions;
@@ -130,52 +157,31 @@ class FtpComponent extends AbstractComponent
      */
     public function init()
     {
-        if (empty($this->host)) {
-            throw new InvalidConfigException('The "host" property must be set.');
-        }
-        if (empty($this->username)) {
-            throw new InvalidConfigException('The "username" property must be set.');
-        }
-        if (empty($this->password)) {
-            throw new InvalidConfigException('The "password" property must be set.');
-        }
-
-        $this->initEncrypter($this->password);
+        $this->passphrase = $this->passphrase ?: ($this->password ?: ($this->username ?: Yii::$app->id));
+        $this->initEncrypter($this->passphrase);
 
         parent::init();
     }
 
     /**
-     * @return FtpAdapter
+     * @return FtpAdapter|PathPrefixedAdapter
      */
     protected function initAdapter()
     {
         $this->root = (string) Yii::getAlias($this->root);
-        $this->root = FileHelper::normalizePath($this->root . '/' . $this->prefix, $this->directorySeparator);
 
         $options = [];
-        foreach ([
-            'host',
-            'root',
-            'username',
-            'password',
-            'port',
-            'ssl',
-            'timeout',
-            'utf8',
-            'passive',
-            'transferMode',
-            'systemType',
-            'ignorePassiveAddress',
-            'timestampsOnUnixListingsEnabled',
-            'recurseManually',
-            'useRawListOptions',
-        ] as $property) {
+        foreach ($this->_properties as $property) {
             $options[$property] = $this->$property;
         }
 
         $this->_connectionOptions = FtpConnectionOptions::fromArray($options);
 
-        return new FtpAdapter($this->_connectionOptions);
+        $adapter = new FtpAdapter($this->_connectionOptions);
+        if ($this->prefix) {
+            $adapter = new PathPrefixedAdapter($adapter, $this->prefix);
+        }
+
+        return $adapter;
     }
 }

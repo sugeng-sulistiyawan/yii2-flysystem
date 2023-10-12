@@ -4,12 +4,13 @@ namespace diecoding\flysystem;
 
 use diecoding\flysystem\traits\UrlGeneratorTrait;
 use League\Flysystem\Local\LocalFilesystemAdapter;
+use League\Flysystem\PathPrefixing\PathPrefixedAdapter;
 use Yii;
 use yii\base\InvalidConfigException;
-use yii\helpers\FileHelper;
 
 /**
- * Class LocalComponent
+ * Interacting with the local filesystem
+ * @see https://flysystem.thephpleague.com/docs/adapter/local/
  * 
  * ```php
  * 'components' => [
@@ -42,11 +43,6 @@ class LocalComponent extends AbstractComponent
     public $secret;
 
     /**
-     * @var string
-     */
-    protected $_location;
-
-    /**
      * @inheritdoc
      */
     public function init()
@@ -64,13 +60,17 @@ class LocalComponent extends AbstractComponent
     }
 
     /**
-     * @return LocalFilesystemAdapter
+     * @return LocalFilesystemAdapter|PathPrefixedAdapter
      */
     protected function initAdapter()
     {
-        $this->path      = (string) Yii::getAlias($this->path);
-        $this->_location = FileHelper::normalizePath($this->path . '/' . $this->prefix, $this->directorySeparator);
+        $this->path = (string) Yii::getAlias($this->path);
 
-        return new LocalFilesystemAdapter($this->_location);
+        $adapter = new LocalFilesystemAdapter($this->path);
+        if ($this->prefix) {
+            $adapter = new PathPrefixedAdapter($adapter, $this->prefix);
+        }
+
+        return $adapter;
     }
 }

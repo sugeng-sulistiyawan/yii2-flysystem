@@ -3,6 +3,7 @@
 namespace diecoding\flysystem;
 
 use diecoding\flysystem\traits\UrlGeneratorTrait;
+use League\Flysystem\PathPrefixing\PathPrefixedAdapter;
 use League\Flysystem\PhpseclibV3\SftpAdapter;
 use League\Flysystem\PhpseclibV3\SftpConnectionProvider;
 use Yii;
@@ -10,7 +11,9 @@ use yii\base\InvalidConfigException;
 use yii\helpers\FileHelper;
 
 /**
- * Class SftpComponent
+ * Interacting with an sftp filesystem
+ * This implementation uses version 3 of phpseclib
+ * @see https://flysystem.thephpleague.com/docs/adapter/sftp-v3/
  * 
  * ```php
  * 'components' => [
@@ -108,6 +111,24 @@ class SftpComponent extends AbstractComponent
     public $root;
 
     /**
+     * @var array
+     */
+    protected $_properties = [
+        'host',
+        'username',
+        'password',
+        'privateKey',
+        'passphrase',
+        'port',
+        'useAgent',
+        'timeout',
+        'maxTries',
+        'hostFingerprint',
+        'connectivityChecker',
+        'preferredAlgorithms',
+    ];
+
+    /**
      * @var SftpConnectionProvider
      */
     protected $_connectionProvider;
@@ -117,17 +138,8 @@ class SftpComponent extends AbstractComponent
      */
     public function init()
     {
-        if (empty($this->host)) {
-            throw new InvalidConfigException('The "host" property must be set.');
-        }
-        if (empty($this->username)) {
-            throw new InvalidConfigException('The "username" property must be set.');
-        }
-        if (empty($this->root)) {
-            throw new InvalidConfigException('The "root" property must be set.');
-        }
-
-        $this->initEncrypter($this->passphrase ?? $this->password ?? $this->username);
+        $this->passphrase = $this->passphrase ?: ($this->password ?: ($this->username ?: Yii::$app->id));
+        $this->initEncrypter($this->passphrase);
 
         parent::init();
     }
@@ -138,28 +150,19 @@ class SftpComponent extends AbstractComponent
     protected function initAdapter()
     {
         $this->root = (string) Yii::getAlias($this->root);
-        $this->root = FileHelper::normalizePath($this->root . '/' . $this->prefix, $this->directorySeparator);
 
         $options = [];
-        foreach ([
-            'host',
-            'username',
-            'password',
-            'privateKey',
-            'passphrase',
-            'port',
-            'useAgent',
-            'timeout',
-            'maxTries',
-            'hostFingerprint',
-            'connectivityChecker',
-            'preferredAlgorithms',
-        ] as $property) {
+        foreach ($this->_properties as $property) {
             $options[$property] = $this->$property;
         }
 
         $this->_connectionProvider = SftpConnectionProvider::fromArray($options);
 
-        return new SftpAdapter($this->_connectionProvider, $this->root);
+        $adapter = new SftpAdapter($this->_connectionProvider, $this->root);
+        if ($this->prefix) {
+            $adapter = new PathPrefixedAdapter($adapter, $this->prefix);
+        }
+
+        return $adapter;
     }
 }
