@@ -18,7 +18,7 @@ use yii\helpers\Url;
 trait UrlGeneratorAdapterTrait
 {
     /**
-     * @var AbstractComponent|UrlGeneratorComponentTrait
+     * @var UrlGeneratorComponentTrait
      */
     public $component;
 

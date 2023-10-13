@@ -8,6 +8,8 @@ use League\Flysystem\UnableToProvideChecksum;
 /**
  * Trait ChecksumAdapterTrait for Adapter
  * 
+ * @method string read(string $location)
+ * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
