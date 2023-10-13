@@ -22,7 +22,7 @@ trait UrlGeneratorAdapterTrait
      */
     public $component;
 
-    public function publicUrl(string $path, Config $config): string
+    public function publicUrl(string $path, /** @scrutinizer ignore-unused */Config $config): string
     {
         // TODO: Use absolute path and don't encrypt
         $params = [
@@ -33,7 +33,7 @@ trait UrlGeneratorAdapterTrait
         return Url::toRoute([$this->component->action, 'data' => $this->component->encrypt(Json::encode($params))], true);
     }
 
-    public function temporaryUrl(string $path, DateTimeInterface $expiresAt, Config $config): string
+    public function temporaryUrl(string $path, DateTimeInterface $expiresAt, /** @scrutinizer ignore-unused */Config $config): string
     {
         // TODO: Use absolute path and don't encrypt
         $params = [
