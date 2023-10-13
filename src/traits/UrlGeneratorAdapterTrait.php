@@ -11,14 +11,17 @@ use yii\helpers\Url;
 /**
  * Trait UrlGeneratorAdapterTrait for Adapter
  * 
- * @property AbstractComponent|UrlGeneratorComponentTrait $component
- * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
  */
 trait UrlGeneratorAdapterTrait
 {
+    /**
+     * @var AbstractComponent|UrlGeneratorComponentTrait
+     */
+    public $component;
+
     public function publicUrl(string $path, Config $config): string
     {
         // TODO: Use absolute path and don't encrypt
