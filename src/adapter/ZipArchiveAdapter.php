@@ -203,6 +203,7 @@ final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, Pu
     {
         $archive = $this->zipArchiveProvider->createZipArchive();
         $location = $this->pathPrefixer->prefixPath($path);
+        /** @var array|false $stats */
         $stats = $archive->statName($location) ?: $archive->statName($location . '/');
 
         if ($stats === false) {
