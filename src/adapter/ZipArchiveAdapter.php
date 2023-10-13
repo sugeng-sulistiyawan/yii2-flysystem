@@ -376,6 +376,7 @@ final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, Pu
             $this->writeStream($destination, $readStream, $config);
         } catch (Throwable $exception) {
             if (isset($readStream)) {
+                /** @scrutinizer ignore-unhandled */
                 @fclose($readStream);
             }
 
