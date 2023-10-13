@@ -203,7 +203,6 @@ final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, Pu
     {
         $archive = $this->zipArchiveProvider->createZipArchive();
         $location = $this->pathPrefixer->prefixPath($path);
-        /** @var array|false $stats */
         $stats = $archive->statName($location) ?: $archive->statName($location . '/');
 
         if ($stats === false) {
@@ -303,11 +302,9 @@ final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, Pu
 
         for ($i = 0; $i < $archive->numFiles; $i++) {
             $stats = $archive->statIndex($i);
-            // @codeCoverageIgnoreStart
             if ($stats === false) {
                 continue;
             }
-            // @codeCoverageIgnoreEnd
 
             $itemPath = $stats['name'];
 
@@ -376,7 +373,7 @@ final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, Pu
             $this->writeStream($destination, $readStream, $config);
         } catch (Throwable $exception) {
             if (isset($readStream)) {
-                /** @scrutinizer ignore-unhandled */@fclose($readStream);
+                @fclose($readStream);
             }
 
             throw UnableToCopyFile::fromLocationTo($source, $destination, $exception);
