@@ -40,3 +40,12 @@ checks:
             verify_interface_like_constraints: true
             verify_documented_constraints: true
             verify_parent_constraints: true
+
+build:
+    image: default-bionic
+    nodes:
+        tests: true
+        analysis:
+            tests:
+                override:
+                    - php-scrutinizer-run
