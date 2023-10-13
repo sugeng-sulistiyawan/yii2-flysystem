@@ -40,7 +40,7 @@ class FileAction extends Action
     public $component = 'fs';
 
     /**
-     * @return \diecoding\flysystem\AbstractComponent
+     * @return \diecoding\flysystem\AbstractComponent|mixed
      */
     public function getFilesystem()
     {
@@ -57,7 +57,7 @@ class FileAction extends Action
     public function run($data = null)
     {
         try {
-            $params = Json::decode($this->filesystem->decrypt($data));
+            $params = Json::decode($this->getFilesystem()->decrypt($data));
 
             $now = (int) (new DateTimeImmutable())->getTimestamp();
             $expires = (int) $params['expires'];
