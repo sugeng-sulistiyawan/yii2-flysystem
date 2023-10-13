@@ -10,7 +10,7 @@ use League\Flysystem\ChecksumProvider;
 use League\Flysystem\UrlGeneration\PublicUrlGenerator;
 use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
 
-final class FtpAdapter extends \League\Flysystem\Ftp\FtpAdapter implements ChecksumProvider
+final class FtpAdapter extends \League\Flysystem\Ftp\FtpAdapter implements ChecksumProvider, PublicUrlGenerator, TemporaryUrlGenerator
 {
-    use ChecksumAdapterTrait;
+    use UrlGeneratorAdapterTrait, ChecksumAdapterTrait;
 }
