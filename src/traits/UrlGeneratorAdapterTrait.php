@@ -5,6 +5,7 @@ namespace diecoding\flysystem\traits;
 use DateTimeInterface;
 use diecoding\flysystem\AbstractComponent;
 use League\Flysystem\Config;
+use League\Flysystem\PathPrefixer;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
@@ -18,13 +19,17 @@ use yii\helpers\Url;
 trait UrlGeneratorAdapterTrait
 {
     /**
-     * @var UrlGeneratorComponentTrait
+     * @var UrlGeneratorComponentTrait|AbstractComponent
      */
     public $component;
 
     public function publicUrl(string $path, /** @scrutinizer ignore-unused */Config $config): string
     {
         // TODO: Use absolute path and don't encrypt
+        if ($this->component->prefix) {
+            $prefixer = new PathPrefixer($this->component->prefix);
+            $path = $prefixer->stripPrefix($path);
+        }
         $params = [
             'path' => $path,
             'expires' => 0,
@@ -36,6 +41,10 @@ trait UrlGeneratorAdapterTrait
     public function temporaryUrl(string $path, DateTimeInterface $expiresAt, /** @scrutinizer ignore-unused */Config $config): string
     {
         // TODO: Use absolute path and don't encrypt
+        if ($this->component->prefix) {
+            $prefixer = new PathPrefixer($this->component->prefix);
+            $path = $prefixer->stripPrefix($path);
+        }
         $params = [
             'path' => $path,
             'expires' => (int) $expiresAt->getTimestamp(),

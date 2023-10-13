@@ -40,14 +40,6 @@ class FileAction extends Action
     public $component = 'fs';
 
     /**
-     * @return \diecoding\flysystem\AbstractComponent|mixed
-     */
-    public function getFilesystem()
-    {
-        return Yii::$app->get($this->component);
-    }
-
-    /**
      * Runs the action.
      *
      * @param string|null $data
@@ -56,18 +48,21 @@ class FileAction extends Action
      */
     public function run($data = null)
     {
+        /** @var \diecoding\flysystem\AbstractComponent|mixed $filesystem */
+        $filesystem = Yii::$app->get($this->component);
+
         try {
-            $params = Json::decode($this->getFilesystem()->decrypt($data));
+            $params = Json::decode($filesystem->decrypt($data));
 
             $now = (int) (new DateTimeImmutable())->getTimestamp();
             $expires = (int) $params['expires'];
 
-            if (!$this->getFilesystem()->fileExists($params['path']) || ($expires > 0 && $expires < $now)) {
+            if (!$filesystem->fileExists($params['path']) || ($expires > 0 && $expires < $now)) {
                 throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
             }
 
-            $content = $this->getFilesystem()->read($params['path']);
-            $mimeType = $this->getFilesystem()->mimeType($params['path']);
+            $content = $filesystem->read($params['path']);
+            $mimeType = $filesystem->mimeType($params['path']);
             $attachmentName = (string) pathinfo($params['path'], PATHINFO_BASENAME);
         } catch (\Throwable $th) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));

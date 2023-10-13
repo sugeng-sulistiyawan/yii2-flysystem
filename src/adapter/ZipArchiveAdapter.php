@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace diecoding\flysystem\adapter;
 
+use DateTimeInterface;
+use diecoding\flysystem\AbstractComponent;
 use diecoding\flysystem\traits\ChecksumAdapterTrait;
-use diecoding\flysystem\traits\UrlGeneratorAdapterTrait;
+use diecoding\flysystem\traits\UrlGeneratorComponentTrait;
 use Generator;
 use League\Flysystem\ChecksumProvider;
 use League\Flysystem\Config;
@@ -30,6 +32,8 @@ use League\Flysystem\ZipArchive\ZipArchiveProvider;
 use League\MimeTypeDetection\FinfoMimeTypeDetector;
 use League\MimeTypeDetection\MimeTypeDetector;
 use Throwable;
+use yii\helpers\Json;
+use yii\helpers\Url;
 use ZipArchive;
 
 use function fclose;
@@ -42,7 +46,7 @@ use function stream_copy_to_stream;
  */
 final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, PublicUrlGenerator, TemporaryUrlGenerator
 {
-    use UrlGeneratorAdapterTrait, ChecksumAdapterTrait;
+    use ChecksumAdapterTrait;
 
     private PathPrefixer $pathPrefixer;
     private MimeTypeDetector $mimeTypeDetector;
@@ -443,5 +447,34 @@ final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, Pu
             : $this->visibility->forFile($visibility);
 
         return $archive->setExternalAttributesName($statsName, ZipArchive::OPSYS_UNIX, $visibility << 16);
+    }
+
+    // =================================================
+
+    /**
+     * @var UrlGeneratorComponentTrait|AbstractComponent
+     */
+    public $component;
+
+    public function publicUrl(string $path, Config $config): string
+    {
+        // TODO: Use absolute path and don't encrypt
+        $params = [
+            'path' => $path,
+            'expires' => 0,
+        ];
+
+        return Url::toRoute([$this->component->action, 'data' => $this->component->encrypt(Json::encode($params))], true);
+    }
+
+    public function temporaryUrl(string $path, DateTimeInterface $expiresAt, Config $config): string
+    {
+        // TODO: Use absolute path and don't encrypt
+        $params = [
+            'path' => $path,
+            'expires' => (int) $expiresAt->getTimestamp(),
+        ];
+
+        return Url::toRoute([$this->component->action, 'data' => $this->component->encrypt(Json::encode($params))], true);
     }
 }
