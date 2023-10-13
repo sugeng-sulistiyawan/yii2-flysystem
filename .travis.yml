@@ -6,4 +6,4 @@ php:
 
 install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
-  - composer update --no-interaction
+  - composer install --prefer-dist --no-progress
