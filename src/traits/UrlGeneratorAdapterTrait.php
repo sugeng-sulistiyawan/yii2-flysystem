@@ -3,47 +3,41 @@
 namespace diecoding\flysystem\traits;
 
 use DateTimeInterface;
+use diecoding\flysystem\AbstractComponent;
 use League\Flysystem\Config;
 use yii\helpers\Json;
 use yii\helpers\Url;
 
 /**
- * Trait UrlGeneratorTrait for Model
+ * Trait UrlGeneratorAdapterTrait for Adapter
  * 
- * @method string normalizePath(string $path, \League\Flysystem\PathNormalizer $pathNormalizer = null)
+ * @property AbstractComponent|UrlGeneratorComponentTrait $component
  * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
  */
-trait UrlGeneratorTrait
+trait UrlGeneratorAdapterTrait
 {
-    use EncrypterTrait;
-
-    /**
-     * @var string
-     */
-    public $action = '/site/file';
-
     public function publicUrl(string $path, Config $config): string
     {
+        // TODO: Use absolute path and don't encrypt
         $params = [
-            'path'    => $this->normalizePath($path),
+            'path' => $path,
             'expires' => 0,
-            'config'  => $config,
         ];
 
-        return Url::toRoute([$this->action, 'data' => $this->encrypt(Json::encode($params))], true);
+        return Url::toRoute([$this->component->action, 'data' => $this->component->encrypt(Json::encode($params))], true);
     }
 
     public function temporaryUrl(string $path, DateTimeInterface $expiresAt, Config $config): string
     {
+        // TODO: Use absolute path and don't encrypt
         $params = [
-            'path'    => $this->normalizePath($path),
+            'path' => $path,
             'expires' => (int) $expiresAt->getTimestamp(),
-            'config'  => $config,
         ];
 
-        return Url::toRoute([$this->action, 'data' => $this->encrypt(Json::encode($params))], true);
+        return Url::toRoute([$this->component->action, 'data' => $this->component->encrypt(Json::encode($params))], true);
     }
 }

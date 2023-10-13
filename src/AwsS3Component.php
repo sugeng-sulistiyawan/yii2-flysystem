@@ -92,7 +92,7 @@ class AwsS3Component extends AbstractComponent
     protected $client;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $_availableOptions = [
         'endpoint' => 'endpoint',

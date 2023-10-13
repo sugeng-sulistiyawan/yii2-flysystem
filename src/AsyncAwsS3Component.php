@@ -2,7 +2,6 @@
 
 namespace diecoding\flysystem;
 
-use AsyncAws\Core\Configuration;
 use AsyncAws\S3\S3Client;
 use League\Flysystem\AsyncAwsS3\AsyncAwsS3Adapter;
 use yii\base\InvalidConfigException;
@@ -94,7 +93,7 @@ class AsyncAwsS3Component extends AbstractComponent
     protected $client;
 
     /**
-     * @var array
+     * @var bool[]
      */
     protected $_availableOptions = [
         'region' => false,

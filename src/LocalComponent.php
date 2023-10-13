@@ -2,11 +2,9 @@
 
 namespace diecoding\flysystem;
 
-use diecoding\flysystem\traits\UrlGeneratorTrait;
-use League\Flysystem\Local\LocalFilesystemAdapter;
+use diecoding\flysystem\adapter\LocalFilesystemAdapter;
+use diecoding\flysystem\traits\UrlGeneratorComponentTrait;
 use League\Flysystem\PathPrefixing\PathPrefixedAdapter;
-use League\Flysystem\UrlGeneration\PublicUrlGenerator;
-use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
 use Yii;
 use yii\base\InvalidConfigException;
 
@@ -30,9 +28,9 @@ use yii\base\InvalidConfigException;
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
  */
-class LocalComponent extends AbstractComponent implements PublicUrlGenerator, TemporaryUrlGenerator
+class LocalComponent extends AbstractComponent
 {
-    use UrlGeneratorTrait;
+    use UrlGeneratorComponentTrait;
 
     /**
      * @var string
@@ -69,6 +67,9 @@ class LocalComponent extends AbstractComponent implements PublicUrlGenerator, Te
         $this->path = (string) Yii::getAlias($this->path);
 
         $adapter = new LocalFilesystemAdapter($this->path);
+        // for UrlGeneratorAdapterTrait
+        $adapter->component = $this;
+
         if ($this->prefix) {
             $adapter = new PathPrefixedAdapter($adapter, $this->prefix);
         }

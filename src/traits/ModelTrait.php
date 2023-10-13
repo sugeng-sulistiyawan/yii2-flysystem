@@ -42,7 +42,7 @@ trait ModelTrait
             $fileName = $file->name;
         }
         if ($autoExtension) {
-            $_file    = (string) pathinfo($fileName, PATHINFO_FILENAME);
+            $_file = (string) pathinfo($fileName, PATHINFO_FILENAME);
             $fileName = $_file . '.' . $file->extension;
         }
 
@@ -50,10 +50,10 @@ trait ModelTrait
         if (!$this->validate($attribute)) {
             return;
         }
-        $filePath  = $this->getAttributePath($attribute) . '/' . $fileName;
+        $filePath = $this->getAttributePath($attribute) . '/' . $fileName;
         $localPath = $file->tempName;
-        $handle    = fopen($localPath, 'r');
-        $contents  = fread($handle, filesize($localPath));
+        $handle = fopen($localPath, 'r');
+        $contents = fread($handle, filesize($localPath));
         fclose($handle);
 
         $filesystem = $this->getFsComponent();
@@ -72,7 +72,7 @@ trait ModelTrait
         if (empty($this->{$attribute})) {
             return;
         }
-        $filePath   = $this->getAttributePath($attribute) . '/' . $this->{$attribute};
+        $filePath = $this->getAttributePath($attribute) . '/' . $this->{$attribute};
         $filesystem = $this->getFsComponent();
         $filesystem->delete($filesystem->normalizePath($filePath));
 
@@ -91,7 +91,7 @@ trait ModelTrait
         if (empty($this->{$attribute})) {
             return '';
         }
-        $filePath   = $this->getAttributePath($attribute) . '/' . $this->{$attribute};
+        $filePath = $this->getAttributePath($attribute) . '/' . $this->{$attribute};
         $filesystem = $this->getFsComponent();
 
         return $filesystem->publicUrl($filesystem->normalizePath($filePath));
@@ -109,7 +109,7 @@ trait ModelTrait
         if (empty($this->{$attribute})) {
             return '';
         }
-        $filePath   = $this->getAttributePath($attribute) . '/' . $this->{$attribute};
+        $filePath = $this->getAttributePath($attribute) . '/' . $this->{$attribute};
         $filesystem = $this->getFsComponent();
 
         return $filesystem->temporaryUrl($filesystem->normalizePath($filePath), $this->getPresignedUrlDuration($attribute));
@@ -137,7 +137,7 @@ trait ModelTrait
     protected function getPresignedUrlDuration($attribute)
     {
         $filesystem = $this->getFsComponent();
-        $dateValue  = '+5 Minutes';
+        $dateValue = '+5 Minutes';
 
         if (empty($this->{$attribute})) {
             $dateValue = 'now';

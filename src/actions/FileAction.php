@@ -35,21 +35,16 @@ use yii\web\NotFoundHttpException;
 class FileAction extends Action
 {
     /**
-     * @var string flysystem component
+     * @var string filesystem config component (fs)
      */
     public $component = 'fs';
 
     /**
-     * @var \diecoding\flysystem\AbstractComponent|mixed
+     * @return \diecoding\flysystem\AbstractComponent
      */
-    protected $filesystem;
-
-    /**
-     * {@inheritdoc}
-     */
-    public function init()
+    public function getFilesystem()
     {
-        $this->filesystem = Yii::$app->get($this->component);
+        return Yii::$app->get($this->component);
     }
 
     /**
@@ -64,16 +59,15 @@ class FileAction extends Action
         try {
             $params = Json::decode($this->filesystem->decrypt($data));
 
-            $now     = (int) (new DateTimeImmutable())->getTimestamp();
+            $now = (int) (new DateTimeImmutable())->getTimestamp();
             $expires = (int) $params['expires'];
-            // $config  = (array) $params['config'];
 
-            if (!$this->filesystem->fileExists($params['path']) || ($expires > 0 && $expires < $now)) {
+            if (!$this->getFilesystem()->fileExists($params['path']) || ($expires > 0 && $expires < $now)) {
                 throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
             }
 
-            $content        = $this->filesystem->read($params['path']);
-            $mimeType       = $this->filesystem->mimeType($params['path']);
+            $content = $this->getFilesystem()->read($params['path']);
+            $mimeType = $this->getFilesystem()->mimeType($params['path']);
             $attachmentName = (string) pathinfo($params['path'], PATHINFO_BASENAME);
         } catch (\Throwable $th) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
@@ -81,7 +75,7 @@ class FileAction extends Action
 
         return Yii::$app->getResponse()->sendContentAsFile($content, $attachmentName, [
             'mimeType' => $mimeType,
-            'inline'   => true,
+            'inline' => true,
         ]);
     }
 }

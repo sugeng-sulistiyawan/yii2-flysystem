@@ -2,24 +2,14 @@
 
 namespace diecoding\flysystem;
 
-use diecoding\flysystem\traits\UrlGeneratorTrait;
-use League\Flysystem\ChecksumAlgoIsNotSupported;
-use League\Flysystem\ChecksumProvider;
-use League\Flysystem\Config;
-use League\Flysystem\UnableToGeneratePublicUrl;
-use League\Flysystem\UnableToGenerateTemporaryUrl;
-use League\Flysystem\UrlGeneration\PublicUrlGenerator;
-use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
+use diecoding\flysystem\adapter\ZipArchiveAdapter;
+use diecoding\flysystem\traits\UrlGeneratorComponentTrait;
 use League\Flysystem\ZipArchive\FilesystemZipArchiveProvider;
-use League\Flysystem\ZipArchive\ZipArchiveAdapter;
 use Yii;
 use yii\base\InvalidConfigException;
 
 /**
  * Interacting with an ZipArchive filesystem
- * ! Notice
- * It's important to know this adapter does not fully comply with the adapter contract. The difference(s) is/are:
- * - Checksum setting or retrieving is not supported.
  * @see https://flysystem.thephpleague.com/docs/adapter/zip-archive/
  * 
  * ```php
@@ -38,9 +28,9 @@ use yii\base\InvalidConfigException;
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
  */
-class ZipArchiveComponent extends AbstractComponent implements PublicUrlGenerator, TemporaryUrlGenerator, ChecksumProvider
+class ZipArchiveComponent extends AbstractComponent
 {
-    use UrlGeneratorTrait;
+    use UrlGeneratorComponentTrait;
 
     /**
      * @var string
@@ -76,18 +66,13 @@ class ZipArchiveComponent extends AbstractComponent implements PublicUrlGenerato
     {
         $this->pathToZip = (string) Yii::getAlias($this->pathToZip);
 
-        return new ZipArchiveAdapter(
+        $adapter = new ZipArchiveAdapter(
             new FilesystemZipArchiveProvider($this->pathToZip),
             (string) $this->prefix
         );
-    }
+        // for UrlGeneratorAdapterTrait
+        $adapter->component = $this;
 
-    public function checksum(string $path, Config $config): string
-    {
-        if ($this->debug) {
-            throw new ChecksumAlgoIsNotSupported('ZipArchiveComponent does not support this operation.');
-        }
-
-        return '';
+        return $adapter;
     }
 }

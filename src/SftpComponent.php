@@ -2,24 +2,17 @@
 
 namespace diecoding\flysystem;
 
-use diecoding\flysystem\traits\UrlGeneratorTrait;
-use League\Flysystem\ChecksumAlgoIsNotSupported;
-use League\Flysystem\ChecksumProvider;
+use diecoding\flysystem\adapter\SftpAdapter;
+use diecoding\flysystem\traits\UrlGeneratorComponentTrait;
 use League\Flysystem\Config;
 use League\Flysystem\PathPrefixing\PathPrefixedAdapter;
-use League\Flysystem\PhpseclibV3\SftpAdapter;
 use League\Flysystem\PhpseclibV3\SftpConnectionProvider;
-use League\Flysystem\UrlGeneration\PublicUrlGenerator;
-use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
 use Yii;
 use yii\base\InvalidConfigException;
 
 /**
  * Interacting with an SFTP filesystem
  * This implementation uses version 3 of phpseclib
- * ! Notice
- * It's important to know this adapter does not fully comply with the adapter contract. The difference(s) is/are:
- * - Checksum setting or retrieving is not supported.
  * @see https://flysystem.thephpleague.com/docs/adapter/sftp-v3/
  * 
  * ```php
@@ -49,9 +42,9 @@ use yii\base\InvalidConfigException;
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
  */
-class SftpComponent extends AbstractComponent implements PublicUrlGenerator, TemporaryUrlGenerator, ChecksumProvider
+class SftpComponent extends AbstractComponent
 {
-    use UrlGeneratorTrait;
+    use UrlGeneratorComponentTrait;
 
     /**
      * @var string
@@ -118,7 +111,7 @@ class SftpComponent extends AbstractComponent implements PublicUrlGenerator, Tem
     public $root;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $_availableOptions = [
         'host',
@@ -175,19 +168,13 @@ class SftpComponent extends AbstractComponent implements PublicUrlGenerator, Tem
         $this->_connectionProvider = SftpConnectionProvider::fromArray($options);
 
         $adapter = new SftpAdapter($this->_connectionProvider, $this->root);
+        // for UrlGeneratorAdapterTrait
+        $adapter->component = $this;
+
         if ($this->prefix) {
             $adapter = new PathPrefixedAdapter($adapter, $this->prefix);
         }
 
         return $adapter;
-    }
-
-    public function checksum(string $path, Config $config): string
-    {
-        if ($this->debug) {
-            throw new ChecksumAlgoIsNotSupported('SftpComponent does not support this operation.');
-        }
-
-        return '';
     }
 }

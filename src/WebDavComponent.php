@@ -2,12 +2,7 @@
 
 namespace diecoding\flysystem;
 
-use DateTimeInterface;
-use League\Flysystem\ChecksumAlgoIsNotSupported;
-use League\Flysystem\ChecksumProvider;
-use League\Flysystem\Config;
-use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
-use League\Flysystem\WebDAV\WebDAVAdapter;
+use diecoding\flysystem\adapter\WebDAVAdapter;
 use Sabre\DAV\Client;
 use yii\base\InvalidConfigException;
 
@@ -16,7 +11,6 @@ use yii\base\InvalidConfigException;
  * ! Notice
  * It's important to know this adapter does not fully comply with the adapter contract. The difference(s) is/are:
  * - Visibility setting or retrieving is not supported.
- * - Checksum setting or retrieving is not supported.
  * - TemporaryUrl setting or retrieving equal to PublicUrl.
  * @see https://flysystem.thephpleague.com/docs/adapter/webdav/
  * 
@@ -39,7 +33,7 @@ use yii\base\InvalidConfigException;
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
  */
-class WebDavComponent extends AbstractComponent implements TemporaryUrlGenerator, ChecksumProvider
+class WebDavComponent extends AbstractComponent
 {
     /**
      * @var string
@@ -84,7 +78,7 @@ class WebDavComponent extends AbstractComponent implements TemporaryUrlGenerator
     protected $client;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $_availableOptions = [
         'baseUri',
@@ -122,19 +116,5 @@ class WebDavComponent extends AbstractComponent implements TemporaryUrlGenerator
         $this->client = new Client($config);
 
         return new WebDAVAdapter($this->client, (string) $this->prefix, $this->debug ? WebDAVAdapter::ON_VISIBILITY_THROW_ERROR : WebDAVAdapter::ON_VISIBILITY_IGNORE);
-    }
-
-    public function temporaryUrl(string $path, DateTimeInterface $expiresAt, Config $config): string
-    {
-        return $this->publicUrl($path, $config);
-    }
-
-    public function checksum(string $path, Config $config): string
-    {
-        if ($this->debug) {
-            throw new ChecksumAlgoIsNotSupported('WebDavComponent does not support this operation.');
-        }
-
-        return '';
     }
 }

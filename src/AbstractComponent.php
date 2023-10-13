@@ -8,36 +8,34 @@ use League\Flysystem\Filesystem;
 use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\PathNormalizer;
 use League\Flysystem\WhitespacePathNormalizer;
+use League\Flysystem\UrlGeneration\PublicUrlGenerator;
+use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
 use yii\base\Component;
 
 /**
  * Class AbstractComponent
  * 
- * @method bool fileExists(string $path)
- * @method bool directoryExists(string $path)
- * @method void write(string $path, string $contents, \League\Flysystem\Config $config)
- * @method void writeStream(string $path, resource $contents, \League\Flysystem\Config $config)
- * @method string read(string $path)
- * @method resource readStream(string $path)
- * @method void delete(string $path)
- * @method void deleteDirectory(string $path)
- * @method void createDirectory(string $path, \League\Flysystem\Config $config)
+ * @method bool fileExists(string $location)
+ * @method bool directoryExists(string $location)
+ * @method bool has(string $location) check fileExists or directoryExists
+ * @method void write(string $location, string $contents, array $config = [])
+ * @method void writeStream(string $location, $contents, array $config = [])
+ * @method string read(string $location)
+ * @method resource readStream(string $location)
+ * @method void delete(string $location)
+ * @method void deleteDirectory(string $location)
+ * @method void createDirectory(string $location, array $config = [])
+ * @method \League\Flysystem\DirectoryListing listContents(string $location, bool = \League\Flysystem\Filesystem::LIST_SHALLOW)
+ * @method void move(string $source, string $destination, array $config = [])
+ * @method void copy(string $source, string $destination, array $config = [])
+ * @method int lastModified(string $path)
+ * @method int fileSize(string $path)
+ * @method string mimeType(string $path)
  * @method void setVisibility(string $path, string $visibility)
- * @method string|\League\Flysystem\FileAttributes visibility(string $path)
- * @method string|\League\Flysystem\FileAttributes mimeType(string $path)
- * @method int|\League\Flysystem\FileAttributes lastModified(string $path)
- * @method int|\League\Flysystem\FileAttributes fileSize(string $path)
- * @method iterable<\League\Flysystem\StorageAttributes>|\League\Flysystem\DirectoryListing<\League\Flysystem\StorageAttributes> listContents(string $path, bool $deep)
- * @method void move(string $source, string $destination, \League\Flysystem\Config $config)
- * @method void copy(string $source, string $destination, \League\Flysystem\Config $config)
- * @method bool has(string $path) check fileExists or directoryExists
- * @method string checksum(string $path, \League\Flysystem\Config $config)
- * 
- * @method string publicUrl(string $path, \League\Flysystem\Config $config)
- * @method string temporaryUrl(string $path, \DateTimeInterface $expiresAt, \League\Flysystem\Config $config)
- * 
- * @method string encrypt(string $string)
- * @method string decrypt(string $string)
+ * @method string visibility(string $path)
+ * @method string publicUrl(string $path, array $config = [])
+ * @method string temporaryUrl(string $path, \DateTimeInterface $expiresAt, array $config = [])
+ * @method string checksum(string $path, array $config = [])
  * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
@@ -65,10 +63,7 @@ abstract class AbstractComponent extends Component
      */
     public $debug = false;
 
-    /**
-     * @var Filesystem
-     */
-    protected $filesystem;
+    private $_filesystem;
 
     /**
      * @param string $method
@@ -77,7 +72,7 @@ abstract class AbstractComponent extends Component
      */
     public function __call($method, $parameters)
     {
-        return call_user_func_array([$this->filesystem, $method], $parameters);
+        return call_user_func_array([$this->getFilesystem(), $method], $parameters);
     }
 
     /**
@@ -86,7 +81,7 @@ abstract class AbstractComponent extends Component
     public function init()
     {
         $adapter = $this->initAdapter();
-        $this->filesystem = new Filesystem($adapter, $this->config);
+        $this->setFilesystem(new Filesystem($adapter, $this->config));
     }
 
     /**
@@ -94,7 +89,16 @@ abstract class AbstractComponent extends Component
      */
     public function getFilesystem()
     {
-        return $this->filesystem;
+        return $this->_filesystem;
+    }
+
+    /**
+     * @param Filesystem $value
+     * @return void
+     */
+    public function setFilesystem(Filesystem $value)
+    {
+        $this->_filesystem = $value;
     }
 
     /**
@@ -127,7 +131,7 @@ abstract class AbstractComponent extends Component
     }
 
     /**
-     * @return FilesystemAdapter $adapter
+     * @return FilesystemAdapter
      */
     abstract protected function initAdapter();
 }

@@ -2,22 +2,14 @@
 
 namespace diecoding\flysystem;
 
-use diecoding\flysystem\traits\UrlGeneratorTrait;
-use League\Flysystem\ChecksumAlgoIsNotSupported;
-use League\Flysystem\ChecksumProvider;
-use League\Flysystem\Config;
-use League\Flysystem\Ftp\FtpAdapter;
+use diecoding\flysystem\adapter\FtpAdapter;
+use diecoding\flysystem\traits\UrlGeneratorComponentTrait;
 use League\Flysystem\Ftp\FtpConnectionOptions;
 use League\Flysystem\PathPrefixing\PathPrefixedAdapter;
-use League\Flysystem\UrlGeneration\PublicUrlGenerator;
-use League\Flysystem\UrlGeneration\TemporaryUrlGenerator;
 use Yii;
 
 /**
  * Interacting with an FTP filesystem
- * ! Notice
- * It's important to know this adapter does not fully comply with the adapter contract. The difference(s) is/are:
- * - Checksum setting or retrieving is not supported.
  * @see https://flysystem.thephpleague.com/docs/adapter/ftp/
  * 
  * ```php
@@ -50,9 +42,9 @@ use Yii;
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
  */
-class FtpComponent extends AbstractComponent implements PublicUrlGenerator, TemporaryUrlGenerator, ChecksumProvider
+class FtpComponent extends AbstractComponent
 {
-    use UrlGeneratorTrait;
+    use UrlGeneratorComponentTrait;
 
     /**
      * @var string
@@ -135,7 +127,7 @@ class FtpComponent extends AbstractComponent implements PublicUrlGenerator, Temp
     public $passphrase;
 
     /**
-     * @var array
+     * @var string[]
      */
     protected $_availableOptions = [
         'host',
@@ -188,19 +180,13 @@ class FtpComponent extends AbstractComponent implements PublicUrlGenerator, Temp
         $this->_connectionOptions = FtpConnectionOptions::fromArray($options);
 
         $adapter = new FtpAdapter($this->_connectionOptions);
+        // for UrlGeneratorAdapterTrait
+        $adapter->component = $this;
+
         if ($this->prefix) {
             $adapter = new PathPrefixedAdapter($adapter, $this->prefix);
         }
 
         return $adapter;
-    }
-
-    public function checksum(string $path, Config $config): string
-    {
-        if ($this->debug) {
-            throw new ChecksumAlgoIsNotSupported('FtpComponent does not support this operation.');
-        }
-
-        return '';
     }
 }
