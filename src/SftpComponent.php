@@ -4,7 +4,6 @@ namespace diecoding\flysystem;
 
 use diecoding\flysystem\adapter\SftpAdapter;
 use diecoding\flysystem\traits\UrlGeneratorComponentTrait;
-use League\Flysystem\Config;
 use League\Flysystem\PathPrefixing\PathPrefixedAdapter;
 use League\Flysystem\PhpseclibV3\SftpConnectionProvider;
 use Yii;
