@@ -4,6 +4,7 @@ namespace diecoding\flysystem;
 
 use Google\Client;
 use Google\Service\Drive;
+use League\Flysystem\PathPrefixing\PathPrefixedAdapter;
 use Masbug\Flysystem\GoogleDriveAdapter;
 use yii\base\InvalidConfigException;
 
@@ -19,6 +20,7 @@ use yii\base\InvalidConfigException;
  *         'clientId' => '',
  *         'clientSecret' => '',
  *         'refreshToken' => '',
+ *         'folder' => '',
  *         // 'teamDriveId' => '',
  *         // 'sharedFolderId' => '',
  *         // 'options' => [],
@@ -53,6 +55,11 @@ class GoogleDriveComponent extends AbstractComponent
      * @var string
      */
     public $refreshToken;
+
+    /**
+     * @var string
+     */
+    public $folder;
 
     /**
      * @var string
@@ -115,11 +122,19 @@ class GoogleDriveComponent extends AbstractComponent
         $client->setClientId($this->clientId);
         $client->setClientSecret($this->clientSecret);
         $client->refreshToken(refreshToken: $this->refreshToken);
-        $client->setApplicationName($this->applicationName);
+
+        if (!empty($this->applicationName)) {
+            $client->setApplicationName($this->applicationName);
+        }
 
         $this->client = $client;
         $service = new Drive($this->client);
+        $adapter = new GoogleDriveAdapter($service, $this->folder, $this->options);
 
-        return new GoogleDriveAdapter($service, $this->prefix, $this->options);
+        if ($this->prefix) {
+            $adapter = new PathPrefixedAdapter($adapter, $this->prefix);
+        }
+
+        return $adapter;
     }
 }
