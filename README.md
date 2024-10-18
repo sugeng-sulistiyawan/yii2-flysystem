@@ -8,7 +8,7 @@ This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integr
 [![Latest Stable Version](https://img.shields.io/packagist/v/diecoding/yii2-flysystem?label=stable)](https://packagist.org/packages/diecoding/yii2-flysystem)
 [![Total Downloads](https://img.shields.io/packagist/dt/diecoding/yii2-flysystem)](https://packagist.org/packages/diecoding/yii2-flysystem)
 [![Latest Stable Release Date](https://img.shields.io/github/release-date/sugeng-sulistiyawan/yii2-flysystem)](https://github.com/sugeng-sulistiyawan/yii2-flysystem)
-[![Quality Score](https://img.shields.io/scrutinizer/quality/g/sugeng-sulistiyawan/yii2-flysystem)](https://scrutinizer-ci.com/g/sugeng-sulistiyawan/yii2-flysystem)
+<!-- [![Quality Score](https://img.shields.io/scrutinizer/quality/g/sugeng-sulistiyawan/yii2-flysystem)](https://scrutinizer-ci.com/g/sugeng-sulistiyawan/yii2-flysystem) -->
 [![Build Status](https://img.shields.io/travis/com/sugeng-sulistiyawan/yii2-flysystem)](https://app.travis-ci.com/sugeng-sulistiyawan/yii2-flysystem)
 [![License](https://img.shields.io/github/license/sugeng-sulistiyawan/yii2-flysystem)](https://github.com/sugeng-sulistiyawan/yii2-flysystem)
 [![PHP Version Require](https://img.shields.io/packagist/dependency-v/diecoding/yii2-flysystem/php?color=6f73a6)](https://packagist.org/packages/diecoding/yii2-flysystem)
@@ -31,6 +31,7 @@ This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integr
     - [SFTP Filesystem](#sftp-filesystem)
     - [WebDAV Filesystem](#webdav-filesystem)
     - [ZipArchive Filesystem](#ziparchive-filesystem)
+    - [Google Drive Filesystem](#google-drive-filesystem)
   - [Additional Configuration](#additional-configuration)
     - [URL File Action Settings](#url-file-action-settings)
     - [Global Visibility Settings](#global-visibility-settings)
@@ -86,10 +87,12 @@ or add to the require section of your `composer.json` file.
 
 - [league/flysystem-async-aws-s3](https://github.com/thephpleague/flysystem-async-aws-s3)
 - [league/flysystem-aws-s3-v3](https://github.com/thephpleague/flysystem-aws-s3-v3)
+- [league/flysystem-google-cloud-storage](https://github.com/thephpleague/flysystem-google-cloud-storage)
 - [league/flysystem-ftp](https://github.com/thephpleague/flysystem-ftp)
 - [league/flysystem-sftp-v3](https://github.com/thephpleague/flysystem-sftp-v3)
 - [league/flysystem-webdav](https://github.com/thephpleague/flysystem-webdav)
 - [league/flysystem-ziparchive](https://github.com/thephpleague/flysystem-ziparchive)
+- [masbug/flysystem-google-drive-ext](https://github.com/masbug/flysystem-google-drive-ext)
 
 ## Configuration
 
@@ -388,6 +391,43 @@ return [
             'secret' => 'my-secret', // for secure route url
             // 'action' => '/site/file', // action route
             // 'prefix' => '', // root directory inside zip file
+        ],
+    ],
+];
+```
+
+### Google Drive Filesystem
+
+Either run
+
+```shell
+composer require masbug/flysystem-google-drive-ext
+```
+
+or add
+
+```shell
+"masbug/flysystem-google-drive-ext": "^2.0"
+```
+
+to the `require` section of your `composer.json` file and configure application `components` as follows
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'fs' => [
+            'class' => \diecoding\flysystem\GoogleDriveComponent::class,
+            'applicationName' => 'My Google Drive App',
+            'clientId' => '',
+            'clientSecret' => '',
+            'refreshToken' => '',
+            // 'teamDriveId' => '',
+            // 'sharedFolderId' => '',
+            // 'options' => [],
+            // 'debug' => false,
+            // 'prefix' => '',
         ],
     ],
 ];
