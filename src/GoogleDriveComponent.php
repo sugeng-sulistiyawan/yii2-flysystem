@@ -20,7 +20,7 @@ use yii\base\InvalidConfigException;
  *         'clientId' => '',
  *         'clientSecret' => '',
  *         'refreshToken' => '',
- *         'folder' => '',
+ *         'folderId' => '',
  *         // 'teamDriveId' => '',
  *         // 'sharedFolderId' => '',
  *         // 'options' => [],
@@ -59,7 +59,7 @@ class GoogleDriveComponent extends AbstractComponent
     /**
      * @var string
      */
-    public $folder;
+    public $folderId;
 
     /**
      * @var string
@@ -86,10 +86,6 @@ class GoogleDriveComponent extends AbstractComponent
      */
     public function init()
     {
-        if (empty($this->applicationName)) {
-            throw new InvalidConfigException('The "applicationName" property must be set.');
-        }
-
         if (empty($this->clientId)) {
             throw new InvalidConfigException('The "clientId" property must be set.');
         }
@@ -129,7 +125,7 @@ class GoogleDriveComponent extends AbstractComponent
 
         $this->client = $client;
         $service = new Drive($this->client);
-        $adapter = new GoogleDriveAdapter($service, $this->folder, $this->options);
+        $adapter = new GoogleDriveAdapter($service, $this->folderId, $this->options);
 
         if ($this->prefix) {
             $adapter = new PathPrefixedAdapter($adapter, $this->prefix);

@@ -424,7 +424,7 @@ return [
             'clientId' => '',
             'clientSecret' => '',
             'refreshToken' => '',
-            'folder' => '',
+            'folderId' => '',
             // 'teamDriveId' => '',
             // 'sharedFolderId' => '',
             // 'options' => [],
