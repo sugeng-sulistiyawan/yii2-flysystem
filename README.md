@@ -26,6 +26,7 @@ This extension provides [Flysystem 3](https://flysystem.thephpleague.com) integr
     - [Local Filesystem](#local-filesystem)
     - [AsyncAws S3 Filesystem](#asyncaws-s3-filesystem)
     - [AWS S3 Filesystem](#aws-s3-filesystem)
+    - [Google Cloud Storage Filesystem](#google-cloud-storage-filesystem)
     - [FTP Filesystem](#ftp-filesystem)
     - [SFTP Filesystem](#sftp-filesystem)
     - [WebDAV Filesystem](#webdav-filesystem)
@@ -185,6 +186,51 @@ return [
             // 'streamReads' => false,
             // 'options' => [],
             // 'credentials' => [],
+            // 'debug' => false,
+            // 'prefix' => '',
+        ],
+    ],
+];
+```
+
+### Google Cloud Storage Filesystem
+
+Either run
+
+```shell
+composer require league/flysystem-google-cloud-storage:^3.0
+```
+
+or add
+
+```shell
+"league/flysystem-google-cloud-storage": "^3.0"
+```
+
+to the `require` section of your `composer.json` file and configure application `components` as follows
+
+```php
+return [
+    // ...
+    'components' => [
+        // ...
+        'fs' => [
+            'class' => \diecoding\flysystem\GoogleCloudStorageComponent::class,
+            'bucket' => 'your-bucket',
+            // 'apiEndpoint' => '',
+            // 'projectId' => '',
+            // 'authCache' => null,
+            // 'authCacheOptions' => [],
+            // 'authHttpHandler' => function () {},
+            // 'credentialsFetcher' => null,
+            // 'httpHandler' => function () {},
+            // 'keyFile' => '',
+            'keyFilePath' => __DIR__ . '/gcs_credentials.json',
+            // 'requestTimeout' => 0,
+            // 'retries' => 0,
+            // 'scopes' => [],
+            // 'quotaProject' => '',
+            // 'userProject' => false,
             // 'debug' => false,
             // 'prefix' => '',
         ],
@@ -753,4 +799,4 @@ The value should be a valid and instance of `PHP DateTimeInterface`. Read [PHP d
 
 ---
 
-Read more docs: https://sugengsulistiyawan.my.id/docs/opensource/yii2/flysystem/
+Read more docs: <https://sugengsulistiyawan.my.id/docs/opensource/yii2/flysystem/>
