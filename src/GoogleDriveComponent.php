@@ -2,10 +2,9 @@
 
 namespace diecoding\flysystem;
 
+use diecoding\flysystem\adapter\GoogleDriveAdapter;
 use Google\Client;
 use Google\Service\Drive;
-use League\Flysystem\PathPrefixing\PathPrefixedAdapter;
-use Masbug\Flysystem\GoogleDriveAdapter;
 use yii\base\InvalidConfigException;
 
 /**

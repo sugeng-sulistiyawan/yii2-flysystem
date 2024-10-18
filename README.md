@@ -119,6 +119,8 @@ return [
 
 ### AsyncAws S3 Filesystem
 
+See: [league/flysystem-async-aws-s3](https://github.com/thephpleague/flysystem-async-aws-s3)
+
 Either run
 
 ```shell
@@ -159,6 +161,8 @@ return [
 
 ### AWS S3 Filesystem
 
+See: [league/flysystem-aws-s3-v3](https://github.com/thephpleague/flysystem-aws-s3-v3)
+
 Either run
 
 ```shell
@@ -198,6 +202,8 @@ return [
 ```
 
 ### Google Cloud Storage Filesystem
+
+See: [league/flysystem-google-cloud-storage](https://github.com/thephpleague/flysystem-google-cloud-storage)
 
 Either run
 
@@ -243,6 +249,8 @@ return [
 ```
 
 ### FTP Filesystem
+
+See: [league/flysystem-ftp](https://github.com/thephpleague/flysystem-ftp)
 
 Either run
 
@@ -290,6 +298,8 @@ return [
 
 ### SFTP Filesystem
 
+See: [league/flysystem-sftp-v3](https://github.com/thephpleague/flysystem-sftp-v3)
+
 Either run
 
 ```shell
@@ -332,6 +342,8 @@ return [
 
 ### WebDAV Filesystem
 
+See: [league/flysystem-webdav](https://github.com/thephpleague/flysystem-webdav)
+
 Either run
 
 ```shell
@@ -367,6 +379,8 @@ return [
 
 ### ZipArchive Filesystem
 
+See: [league/flysystem-ziparchive](https://github.com/thephpleague/flysystem-ziparchive)
+
 Either run
 
 ```shell
@@ -398,6 +412,8 @@ return [
 ```
 
 ### Google Drive Filesystem
+
+See: [masbug/flysystem-google-drive-ext](https://github.com/masbug/flysystem-google-drive-ext)
 
 Either run
 
@@ -443,6 +459,7 @@ The following adapters have URL File Action generation capabilities:
 - Local Component
 - FTP Component
 - SFTP Component
+- Google Drive Component
 
 Configure `action` in `controller` as follows
 
