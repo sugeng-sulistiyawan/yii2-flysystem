@@ -3,6 +3,7 @@
 namespace diecoding\flysystem;
 
 use diecoding\flysystem\adapter\GoogleDriveAdapter;
+use diecoding\flysystem\traits\UrlGeneratorComponentTrait;
 use Google\Client;
 use Google\Service\Drive;
 use yii\base\InvalidConfigException;
@@ -22,7 +23,8 @@ use yii\base\InvalidConfigException;
  *         // 'teamDriveId' => '',
  *         // 'sharedFolderId' => '',
  *         // 'options' => [],
- *         // 'debug' => false,
+ *         'secret' => 'my-secret', // for secure route url
+ *         // 'action' => '/site/file', // action route
  *         // 'prefix' => '',
  *     ],
  * ],
@@ -34,6 +36,8 @@ use yii\base\InvalidConfigException;
  */
 class GoogleDriveComponent extends AbstractComponent
 {
+    use UrlGeneratorComponentTrait;
+
     /**
      * @var string
      */
@@ -63,6 +67,11 @@ class GoogleDriveComponent extends AbstractComponent
      * @var string
      */
     public $sharedFolderId;
+
+    /**
+     * @var string
+     */
+    public $secret;
 
     /**
      * @var array
@@ -98,6 +107,12 @@ class GoogleDriveComponent extends AbstractComponent
         if (!empty($this->sharedFolderId)) {
             $this->options['sharedFolderId'] = $this->sharedFolderId;
         }
+
+        if (empty($this->secret)) {
+            throw new InvalidConfigException('The "secret" property must be set.');
+        }
+
+        $this->initEncrypter($this->secret);
 
         parent::init();
     }

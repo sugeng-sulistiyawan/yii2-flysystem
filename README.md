@@ -241,7 +241,6 @@ return [
             // 'scopes' => [],
             // 'quotaProject' => '',
             // 'userProject' => false,
-            // 'debug' => false,
             // 'prefix' => '',
         ],
     ],
@@ -418,7 +417,7 @@ See: [masbug/flysystem-google-drive-ext](https://github.com/masbug/flysystem-goo
 Either run
 
 ```shell
-composer require masbug/flysystem-google-drive-ext
+composer require masbug/flysystem-google-drive-ext:^2.0
 ```
 
 or add
@@ -443,7 +442,8 @@ return [
             // 'teamDriveId' => '',
             // 'sharedFolderId' => '',
             // 'options' => [],
-            // 'debug' => false,
+            'secret' => 'my-secret', // for secure route url
+            // 'action' => '/site/file', // action route
             // 'prefix' => '',
         ],
     ],

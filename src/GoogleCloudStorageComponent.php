@@ -31,7 +31,6 @@ use yii\base\InvalidConfigException;
  *         // 'scopes' => [],
  *         // 'quotaProject' => '',
  *         // 'userProject' => false,
- *         // 'debug' => false,
  *         // 'prefix' => '',
  *     ],
  * ],
