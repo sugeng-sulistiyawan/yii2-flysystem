@@ -36,6 +36,8 @@ use yii\base\InvalidConfigException;
  * @method string temporaryUrl(string $path, \DateTimeInterface $expiresAt, array $config = [])
  * @method string checksum(string $path, array $config = [])
  * 
+ * @property string $action
+ * 
  * @link      https://sugengsulistiyawan.my.id/
  * @author    Sugeng Sulistiyawan <sugeng.sulistiyawan@gmail.com>
  * @copyright Copyright (c) 2023
