@@ -17,6 +17,11 @@ use League\Flysystem\ZipArchive\ZipArchiveAdapter as LeagueZipArchiveAdapter;
 use League\Flysystem\ZipArchive\ZipArchiveProvider;
 use League\MimeTypeDetection\MimeTypeDetector;
 
+/**
+ * This properties for fixed issue https://scrutinizer-ci.com/g/sugeng-sulistiyawan/yii2-flysystem/inspections/22f77797-37d0-419a-9447-ab6111572e99/issues/?status=all
+ * @property string $action
+ * @property string $prefix
+ */
 final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, PublicUrlGenerator, TemporaryUrlGenerator
 {
     use UrlGeneratorAdapterTrait, ChecksumAdapterTrait;
