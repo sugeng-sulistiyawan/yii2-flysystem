@@ -187,7 +187,7 @@ return [
             'key' => 'your-key',
             'secret' => 'your-secret',
             'bucket' => 'your-bucket',
-            // 'region' => 'us-east-1'
+            // 'region' => 'us-east-1',
             // 'version' => 'latest',
             // 'usePathStyleEndpoint' => false,
             // 'streamReads' => false,
