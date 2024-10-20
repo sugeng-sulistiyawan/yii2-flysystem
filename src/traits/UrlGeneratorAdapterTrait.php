@@ -19,15 +19,15 @@ use yii\helpers\Url;
 trait UrlGeneratorAdapterTrait
 {
     /**
-     * @var UrlGeneratorComponentTrait|AbstractComponent
+     * @var AbstractComponent|UrlGeneratorComponentTrait
      */
     public $component;
 
     public function publicUrl(string $path, /** @scrutinizer ignore-unused */Config $config): string
     {
         // TODO: Use absolute path and don't encrypt
-        if ($this->component->prefix) {
-            $prefixer = new PathPrefixer($this->component->prefix);
+        if ($this->component?->prefix) {
+            $prefixer = new PathPrefixer((string) $this->component?->prefix);
             $path = $prefixer->stripPrefix($path);
         }
         $params = [
@@ -35,14 +35,14 @@ trait UrlGeneratorAdapterTrait
             'expires' => 0,
         ];
 
-        return Url::toRoute([$this->component->action, 'data' => $this->component->encrypt(Json::encode($params))], true);
+        return Url::toRoute([$this->component?->action, 'data' => $this->component?->encrypt(Json::encode($params))], true);
     }
 
     public function temporaryUrl(string $path, DateTimeInterface $expiresAt, /** @scrutinizer ignore-unused */Config $config): string
     {
         // TODO: Use absolute path and don't encrypt
-        if ($this->component->prefix) {
-            $prefixer = new PathPrefixer($this->component->prefix);
+        if ($this->component?->prefix) {
+            $prefixer = new PathPrefixer((string) $this->component?->prefix);
             $path = $prefixer->stripPrefix($path);
         }
         $params = [
@@ -50,6 +50,6 @@ trait UrlGeneratorAdapterTrait
             'expires' => (int) $expiresAt->getTimestamp(),
         ];
 
-        return Url::toRoute([$this->component->action, 'data' => $this->component->encrypt(Json::encode($params))], true);
+        return Url::toRoute([$this->component?->action, 'data' => $this->component?->encrypt(Json::encode($params))], true);
     }
 }

@@ -140,12 +140,13 @@ class GoogleCloudStorageComponent extends AbstractComponent
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function init()
     {
-        if (empty($this->bucket)) {
-            throw new InvalidConfigException('The "bucket" property must be set.');
-        }
+        $this->validateProperties([
+            'bucket',
+        ]);
 
         parent::init();
     }

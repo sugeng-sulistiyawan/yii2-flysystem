@@ -44,15 +44,14 @@ class LocalComponent extends AbstractComponent
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function init()
     {
-        if (empty($this->path)) {
-            throw new InvalidConfigException('The "path" property must be set.');
-        }
-        if (empty($this->secret)) {
-            throw new InvalidConfigException('The "secret" property must be set.');
-        }
+        $this->validateProperties([
+            'path',
+            'secret',
+        ]);
 
         $this->initEncrypter($this->secret);
 

@@ -207,6 +207,8 @@ final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, Pu
     {
         $archive = $this->zipArchiveProvider->createZipArchive();
         $location = $this->pathPrefixer->prefixPath($path);
+
+        /** @var array|false $stats */
         $stats = $archive->statName($location) ?: $archive->statName($location . '/');
 
         if ($stats === false) {
@@ -377,7 +379,7 @@ final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, Pu
             $this->writeStream($destination, $readStream, $config);
         } catch (Throwable $exception) {
             if (isset($readStream)) {
-                @fclose($readStream);
+                /** @scrutinizer ignore-unhandled */ @fclose($readStream);
             }
 
             throw UnableToCopyFile::fromLocationTo($source, $destination, $exception);
@@ -452,7 +454,7 @@ final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, Pu
     // =================================================
 
     /**
-     * @var UrlGeneratorComponentTrait|AbstractComponent
+     * @var AbstractComponent|UrlGeneratorComponentTrait
      */
     public $component;
 
@@ -464,7 +466,7 @@ final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, Pu
             'expires' => 0,
         ];
 
-        return Url::toRoute([$this->component->action, 'data' => $this->component->encrypt(Json::encode($params))], true);
+        return Url::toRoute([$this->component?->action, 'data' => $this->component?->encrypt(Json::encode($params))], true);
     }
 
     public function temporaryUrl(string $path, DateTimeInterface $expiresAt, Config $config): string
@@ -475,6 +477,6 @@ final class ZipArchiveAdapter implements FilesystemAdapter, ChecksumProvider, Pu
             'expires' => (int) $expiresAt->getTimestamp(),
         ];
 
-        return Url::toRoute([$this->component->action, 'data' => $this->component->encrypt(Json::encode($params))], true);
+        return Url::toRoute([$this->component?->action, 'data' => $this->component?->encrypt(Json::encode($params))], true);
     }
 }

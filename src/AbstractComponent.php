@@ -9,6 +9,7 @@ use League\Flysystem\FilesystemAdapter;
 use League\Flysystem\PathNormalizer;
 use League\Flysystem\WhitespacePathNormalizer;
 use yii\base\Component;
+use yii\base\InvalidConfigException;
 
 /**
  * Class AbstractComponent
@@ -132,4 +133,20 @@ abstract class AbstractComponent extends Component
      * @return FilesystemAdapter
      */
     abstract protected function initAdapter();
+
+    /**
+     * Validate property
+     * 
+     * @param array $properties
+     * @return void
+     * @throws InvalidConfigException
+     */
+    public function validateProperties(array $properties = [])
+    {
+        foreach ($properties as $property) {
+            if (empty($this->$property)) {
+                throw new InvalidConfigException("The \"$property\" property must be set.");
+            }
+        }
+    }
 }

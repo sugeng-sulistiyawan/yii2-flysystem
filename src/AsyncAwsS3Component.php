@@ -110,18 +110,15 @@ class AsyncAwsS3Component extends AbstractComponent
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function init()
     {
-        if (empty($this->accessKeyId)) {
-            throw new InvalidConfigException('The "accessKeyId" property must be set.');
-        }
-        if (empty($this->accessKeySecret)) {
-            throw new InvalidConfigException('The "accessKeySecret" property must be set.');
-        }
-        if (empty($this->bucket)) {
-            throw new InvalidConfigException('The "bucket" property must be set.');
-        }
+        $this->validateProperties([
+            'bucket',
+            'accessKeyId',
+            'accessKeySecret',
+        ]);
 
         parent::init();
     }

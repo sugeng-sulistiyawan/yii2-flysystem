@@ -91,12 +91,13 @@ class WebDavComponent extends AbstractComponent
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function init()
     {
-        if (empty($this->baseUri)) {
-            throw new InvalidConfigException('The "baseUri" property must be set.');
-        }
+        $this->validateProperties([
+            'baseUri',
+        ]);
 
         parent::init();
     }

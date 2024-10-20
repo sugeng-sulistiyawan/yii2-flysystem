@@ -52,7 +52,7 @@ class FileAction extends Action
         $filesystem = Yii::$app->get($this->component);
 
         try {
-            $params = Json::decode($filesystem->decrypt($data));
+            $params = Json::decode($filesystem?->decrypt($data));
 
             $now = (int) (new DateTimeImmutable())->getTimestamp();
             $expires = (int) $params['expires'];

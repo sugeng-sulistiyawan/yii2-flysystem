@@ -84,33 +84,25 @@ class GoogleDriveComponent extends AbstractComponent
     protected $client;
 
     /**
+     * @var string[]
+     */
+    protected $_availableOptions = [
+        'teamDriveId',
+        'sharedFolderId',
+    ];
+
+    /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function init()
     {
-        if (empty($this->clientId)) {
-            throw new InvalidConfigException('The "clientId" property must be set.');
-        }
-
-        if (empty($this->clientSecret)) {
-            throw new InvalidConfigException('The "clientSecret" property must be set.');
-        }
-
-        if (empty($this->refreshToken)) {
-            throw new InvalidConfigException('The "refreshToken" property must be set.');
-        }
-
-        if (!empty($this->teamDriveId)) {
-            $this->options['teamDriveId'] = $this->teamDriveId;
-        }
-
-        if (!empty($this->sharedFolderId)) {
-            $this->options['sharedFolderId'] = $this->sharedFolderId;
-        }
-
-        if (empty($this->secret)) {
-            throw new InvalidConfigException('The "secret" property must be set.');
-        }
+        $this->validateProperties([
+            'clientId',
+            'clientSecret',
+            'refreshToken',
+            'secret',
+        ]);
 
         $this->initEncrypter($this->secret);
 
@@ -131,9 +123,19 @@ class GoogleDriveComponent extends AbstractComponent
             $client->setApplicationName($this->applicationName);
         }
 
+        foreach ($this->_availableOptions as $property) {
+            if (!empty($this->$property)) {
+                $this->options[$property] = $this->$property;
+            }
+        }
+
         $this->client = $client;
         $service = new Drive($this->client);
 
-        return new GoogleDriveAdapter($service, $this->prefix, $this->options);
+        $adapter = new GoogleDriveAdapter($service, $this->prefix, $this->options);
+        // for UrlGeneratorAdapterTrait
+        $adapter->component = $this;
+
+        return $adapter;
     }
 }

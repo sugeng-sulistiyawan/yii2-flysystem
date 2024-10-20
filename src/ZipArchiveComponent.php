@@ -44,15 +44,14 @@ class ZipArchiveComponent extends AbstractComponent
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function init()
     {
-        if (empty($this->pathToZip)) {
-            throw new InvalidConfigException('The "pathToZip" property must be set.');
-        }
-        if (empty($this->secret)) {
-            throw new InvalidConfigException('The "secret" property must be set.');
-        }
+        $this->validateProperties([
+            'pathToZip',
+            'secret',
+        ]);
 
         $this->initEncrypter($this->secret);
 

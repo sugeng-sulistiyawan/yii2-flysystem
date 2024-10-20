@@ -134,15 +134,14 @@ class SftpComponent extends AbstractComponent
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function init()
     {
-        if (empty($this->host)) {
-            throw new InvalidConfigException('The "host" property must be set.');
-        }
-        if (empty($this->username)) {
-            throw new InvalidConfigException('The "username" property must be set.');
-        }
+        $this->validateProperties([
+            'host',
+            'username',
+        ]);
 
         $this->passphrase = $this->passphrase ?: ($this->password ?: ($this->username ?: Yii::$app->id));
         $this->initEncrypter($this->passphrase);

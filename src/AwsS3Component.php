@@ -104,20 +104,16 @@ class AwsS3Component extends AbstractComponent
 
     /**
      * @inheritdoc
+     * @throws InvalidConfigException
      */
     public function init()
     {
+        $properties = ['bucket'];
         if (empty($this->credentials)) {
-            if (empty($this->key)) {
-                throw new InvalidConfigException('The "key" property must be set.');
-            }
-            if (empty($this->secret)) {
-                throw new InvalidConfigException('The "secret" property must be set.');
-            }
+            $properties[] = 'key';
+            $properties[] = 'secret';
         }
-        if (empty($this->bucket)) {
-            throw new InvalidConfigException('The "bucket" property must be set.');
-        }
+        $this->validateProperties($properties);
 
         parent::init();
     }
